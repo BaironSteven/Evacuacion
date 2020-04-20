@@ -38,8 +38,8 @@ public class Fire2D implements SimpleDrawable {
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.green);
-		g.fillRect(x-1, y-1, 20, 20);
+		g.fillRect(x-1, y-1, 10, 10);
 		g.setColor(Color.green);
-		g.drawRect(x-1, y-1, 20, 20);
+		g.drawRect(x-1, y-1, 10, 10);
 	}
 }

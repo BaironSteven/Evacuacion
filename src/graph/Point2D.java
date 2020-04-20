@@ -36,9 +36,9 @@ public class Point2D implements SimpleDrawable {
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.blue);
-		g.fillOval(x-1, y-1, 20, 20);
+		g.fillOval(x-1, y-1, 10, 10);
 		g.setColor(Color.black);
-		g.drawOval(x-1, y-1, 20, 20);
+		g.drawOval(x-1, y-1, 10, 10);
 	}
 
 

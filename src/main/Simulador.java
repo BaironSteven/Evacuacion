@@ -1,17 +1,11 @@
 package main;
 
-import java.awt.EventQueue;
-import java.awt.Font;
+import java.awt.*;
 
 import javax.swing.JFrame;
-import java.awt.BorderLayout;
-import java.awt.Canvas;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import java.awt.GridLayout;
-import java.awt.HeadlessException;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -37,7 +31,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import Auxiliar.Coordenadas;
 import Auxiliar.Fuego;
 import Auxiliar.FicheroEdificio;
-import Auxiliar.Tamaño;
+import Auxiliar.Size;
 import graph.Blackboard;
 import graph.Door2D;
 import graph.ELGraph;
@@ -46,12 +40,7 @@ import graph.Fire2DAnimable;
 import graph.Point2DAnimable;
 import graph.Square2D;
 
-import java.awt.Choice;
-import java.awt.Color;
-
 import javax.swing.JSlider;
-import java.awt.Button;
-import java.awt.Frame;
 
 public class Simulador extends javax.swing.JFrame{
 
@@ -72,10 +61,10 @@ public class Simulador extends javax.swing.JFrame{
 	boolean estadoCronometro = false;
 	private String porcentajeDeEvacuacion;
 	int x,y, w, h;
-	Tamaño tam;
+	Size tam;
 	FicheroEdificio lec;
 	private static Simulador window;
-	
+
 	Fuego f;
 	List<ArrayList<Coordenadas>> elems;
 	/**
@@ -94,21 +83,21 @@ public class Simulador extends javax.swing.JFrame{
 		});
 	}
 
-	
+
 	public Simulador() throws HeadlessException {
 		// TODO Auto-generated constructor stub
 		initialize();
-		
+
 		//tEvac = new Timer(100,accionesEvac);
 	}
-	
+
 	public void pararTimer() {
 		// TODO Auto-generated constructor stub
 		t.stop();
-		
+
 		//tEvac = new Timer(100,accionesEvac);
 	}
-	
+
 	private ActionListener acciones = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
@@ -155,7 +144,7 @@ public class Simulador extends javax.swing.JFrame{
 		String tiempoAux = (hor1 <= 9 ? "0" : "") + hor1 + " : " + (min1 <= 9 ? "0" : "") + min1 + " : " +(seg1 <= 9 ? "0" :"") + seg1 + " : " + ds1;
 		((JLabel)this.frame.getContentPane().getComponent(15)).setText(tiempoAux);
 	}
-	
+
 
 	private Timer t = new Timer(100,acciones);
 	private synchronized void iniciar(String edificio, String personas, int j) {
@@ -168,17 +157,17 @@ public class Simulador extends javax.swing.JFrame{
 		s[0] = edificio;
 		if(!personas.equals(""))
 			s[1] = personas;
-		else 
+		else
 			s[1]=porcentajeDeEvacuacion;
-			
+
 		lec = new FicheroEdificio(s[0]);
 		for(int i = 0;i<lec.getBaldosas().size();i++) {
 			if(lec.getBaldosas().get(i).getPos()==0)
-				squares.add(i);	
+				squares.add(i);
 			if(lec.getBaldosas().get(i).getPos()==2)
-				doors.add(i);		
+				doors.add(i);
 		}
-		tam = new Tamaño(Integer.parseInt(lec.getDimensiones()[0]),Integer.parseInt(lec.getDimensiones()[1]),Integer.parseInt(lec.getDimensiones()[0])*20,Integer.parseInt(lec.getDimensiones()[1])*20);
+		tam = new Size(Integer.parseInt(lec.getDimensiones()[0]),Integer.parseInt(lec.getDimensiones()[1]),Integer.parseInt(lec.getDimensiones()[0])*10,Integer.parseInt(lec.getDimensiones()[1])*10);
 		tam.calcDims();
 		elems = new ArrayList<>();
 		//elemsI = new ArrayList<>();
@@ -188,7 +177,7 @@ public class Simulador extends javax.swing.JFrame{
 		t.start();
 		f = new Fuego();
 		if (j==3) {
-			
+
 			f = m.menuF(s,lec,j);
 			col = obtenerColumna(f.getEstado(),0);
 			iniciarElementos(f,squares,doors,lec);
@@ -198,9 +187,9 @@ public class Simulador extends javax.swing.JFrame{
 			col =obtenerColumna(elems,0);
 			iniciarElementos(elems,squares,doors,lec);
 		} else {
-			
+
 			elems = m.menu2(s, lec, j);
-			
+
 			//ArrayList<Coordenadas> elemsAux = new ArrayList<>();
 			/*for(ArrayList<Integer> node:elemsI) {
 				for(Integer node1:node) {
@@ -243,7 +232,7 @@ public class Simulador extends javax.swing.JFrame{
 		}
 		pizarra.addElement(new Fire2DAnimable(f.getFuego().get(0).get(0).getCoord_x()*tam.getDimX(),f.getFuego().get(0).get(0).getCoord_Y()*tam.getDimY(),
 				f.getFuego(),tam.getDimX(),tam.getDimY()));
-		
+
 	}
 
 	private void iniciarElementos(List<ArrayList<Coordenadas>> elems, ArrayList<Integer> squares, ArrayList<Integer> doors, FicheroEdificio lec) {
@@ -260,14 +249,14 @@ public class Simulador extends javax.swing.JFrame{
 			pizarra.addElement((new Door2D((node2%Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimX(),(node2/Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimY(),tam.getDimX(),tam.getDimY())));
 		}
 	}
-	
+
 
 	public static ArrayList<Coordenadas> obtenerColumna(List<ArrayList<Coordenadas>> matriz, int col) {
     	ArrayList<Coordenadas> values = new ArrayList<>();
     	for(int i=0; i<matriz.size(); i++)
     		if(matriz.get(i).size()>col)
     			values.add(matriz.get(i).get(col));
-    		else 
+    		else
     			values.add(new Coordenadas(-1,-1));
 		return values;
     }
@@ -275,96 +264,99 @@ public class Simulador extends javax.swing.JFrame{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
-		frame = new JFrame();
-		//tEvac= new Timer(100, accionesEvac);
+		Dimension ss = Toolkit.getDefaultToolkit ().getScreenSize ();
+		Dimension frameSize = new Dimension ( 500, 300 );
+
+		frame = new JFrame ();
+		frame.setBounds ( ss.width / 2 - frameSize.width / 2,
+				ss.height / 2 - frameSize.height / 2,
+				frameSize.width, frameSize.height );
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		frame.setBounds(100, 100, 3879, 2082);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnSeleccionar = new JButton("Seleccionar...");
-		btnSeleccionar.setBounds(3579, 201, 233, 47);
+		btnSeleccionar.setBounds(1790,101,145,24);
 		frame.getContentPane().add(btnSeleccionar);
 		
 		JLabel lblFicheroEdificio = new JLabel("Fichero Edificio:");
-		lblFicheroEdificio.setBounds(3108, 109, 281, 39);
+		lblFicheroEdificio.setBounds(1554,55,141,20);
 		frame.getContentPane().add(lblFicheroEdificio);
 		
 		textField = new JTextField();
-		textField.setBounds(3113, 202, 466, 45);
+		textField.setBounds(1557,101,233,23);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
 		JLabel label = new JLabel("Fichero Personas:");
-		label.setBounds(3108, 316, 281, 39);
+		label.setBounds(1554,158,141,20);
 		frame.getContentPane().add(label);
 		
 		textField_1 = new JTextField();
 		textField_1.setColumns(10);
-		textField_1.setBounds(3113, 403, 466, 45);
+		textField_1.setBounds(1557,202,233,23);
 		frame.getContentPane().add(textField_1);
 		
 		JButton button = new JButton("Seleccionar...");
-		button.setBounds(3579, 402, 233, 47);
+		button.setBounds(1790,201,145,24);
 		frame.getContentPane().add(button);
 		
 		JLabel lblAlgoritmo = new JLabel("Algoritmo:");
-		lblAlgoritmo.setBounds(3113, 500, 189, 39);
+		lblAlgoritmo.setBounds(1557,250,95,20);
 		frame.getContentPane().add(lblAlgoritmo);
 		
 		Choice choice = new Choice();
-		choice.setBounds(3361, 509, 447, 45);
+		choice.setBounds(1681,255,252,23);
 		choice.add("Algoritmo 1");
 		choice.add("Algoritmo 2");
 		choice.add("Algoritmo 3");
 		frame.getContentPane().add(choice);
 		
 		JSlider slider = new JSlider();
-		slider.setBounds(3091, 1666, 447, 26);
+		slider.setBounds(1546,833,224,13);
 		frame.getContentPane().add(slider);
 		porcentajeDeEvacuacion = Integer.toString(slider.getValue());
 		
 		
 		JButton btnIniciar = new JButton("Iniciar");
-		btnIniciar.setBounds(3091, 1735, 718, 47);
+		btnIniciar.setBounds(1546,868,359,24);
 		frame.getContentPane().add(btnIniciar);
 		
 		JButton btnReiniciar = new JButton("Reiniciar");
-		btnReiniciar.setBounds(3090, 1842, 718, 47);
+		btnReiniciar.setBounds(1545,921,359,24);
 		frame.getContentPane().add(btnReiniciar);
 		
 		
 		JButton btnParar = new JButton("Parar");
-		btnParar.setBounds(3091, 1789, 718, 47);
+		btnParar.setBounds(1546,895,359,24);
 		frame.getContentPane().add(btnParar);
 		
 		JLabel etiquetaTiempo = new JLabel("00 : 00: 00 : 0");
-		etiquetaTiempo.setFont(new Font("Tahoma", Font.PLAIN, 48));
-		etiquetaTiempo.setBounds(481, 33, 353, 39);
+		etiquetaTiempo.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		etiquetaTiempo.setBounds(241,17,177,20);
 		frame.getContentPane().add(etiquetaTiempo);
 		
 		
 		JLabel lblTiempoClculoDe = new JLabel("Tiempo de evacuaci\u00F3n:");
-		lblTiempoClculoDe.setBounds(41, 33, 399, 39);
+		lblTiempoClculoDe.setBounds(21,17,200,20);
 		frame.getContentPane().add(lblTiempoClculoDe);
 		
 		JLabel label_2 = new JLabel("Tiempo c\u00E1lculo de ruta");
-		label_2.setBounds(1027, 30, 399, 39);
+		label_2.setBounds(512,15,200,20);
 		frame.getContentPane().add(label_2);
 		
 		JLabel tiempoCalculo = new JLabel("00 : 00: 00 : 0");
-		tiempoCalculo.setFont(new Font("Tahoma", Font.PLAIN, 48));
-		tiempoCalculo.setBounds(1432, 33, 389, 39);
+		tiempoCalculo.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		tiempoCalculo.setBounds(716,17,195,20);
 		frame.getContentPane().add(tiempoCalculo);
 		
 		JLabel lblPorcentajeDeOcupacin = new JLabel("Porcentaje de ocupaci\u00F3n: 50%");
-		lblPorcentajeDeOcupacin.setBounds(3090, 1594, 579, 39);
+		lblPorcentajeDeOcupacin.setBounds(1545,797,290,20);
 		frame.getContentPane().add(lblPorcentajeDeOcupacin);
 		
 		
 		JButton btnExportar = new JButton("Exportar");
-		btnExportar.setBounds(3571, 1655, 197, 47);
+		btnExportar.setBounds(1786,828,99,24);
 		frame.getContentPane().add(btnExportar);
 		btnExportar.setEnabled(false);
 		btnParar.setEnabled(false);
@@ -383,7 +375,7 @@ public class Simulador extends javax.swing.JFrame{
 				  btnExportar.setEnabled(true);
 				  if(motor==null) {
 					  iniciar(textField.getText(),textField_1.getText(), choice.getSelectedIndex()+1);
-					  pizarra.setBounds(0, 98, tam.getX()*20, tam.getY()*20);
+					  pizarra.setBounds(0, 49, tam.getX()*10, tam.getY()*10);
 					  pizarra.setBackground(Color.WHITE);
 					  frame.getContentPane().add(pizarra);
 				  } else {
@@ -525,8 +517,8 @@ public class Simulador extends javax.swing.JFrame{
 		Scanner entrada = null;
         //Se crea el JFileChooser. Se le indica que la ventana se abra en el directorio actual
         JFileChooser fileChooser = new JFileChooser(".");      
-        //Se crea el filtro. El primer parámetro es el mensaje que se muestra,
-        //el segundo es la extensión de los ficheros que se van a mostrar      
+        //Se crea el filtro. El primer parï¿½metro es el mensaje que se muestra,
+        //el segundo es la extensiï¿½n de los ficheros que se van a mostrar      
         FileFilter filtro = new FileNameExtensionFilter("Archivos java (.java)", "java"); 
         //Se le asigna al JFileChooser el filtro
         fileChooser.setFileFilter(filtro);
@@ -536,7 +528,7 @@ public class Simulador extends javax.swing.JFrame{
         if (valor == JFileChooser.APPROVE_OPTION) {
             ruta = fileChooser.getSelectedFile().getAbsolutePath();
         } else {
-            System.out.println("No se ha seleccionado ningún fichero");
+            System.out.println("No se ha seleccionado ningï¿½n fichero");
         }
 		return ruta;
 	}

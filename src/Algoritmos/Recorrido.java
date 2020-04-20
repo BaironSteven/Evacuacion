@@ -10,7 +10,7 @@ public class Recorrido {
         
         public Recorrido() {
         }
-        //devuelve el tamaño del camino
+        //devuelve el tamano del camino
         public int getLength() {
                 return coordenadasCamino.size();
         }
@@ -29,15 +29,15 @@ public class Recorrido {
                 return getCoordenadasCamino(index).getY();
         }
 
-       // este añade el nodo al final
-        public void añadirCordenadas(Nodo n) {
+       // este aï¿½ade el nodo al final
+        public void addCordenadas(Nodo n) {
                 coordenadasCamino.add(n);
         }
         
-        public Recorrido añadirInicial(Nodo n) {
+        public Recorrido addInicial(Nodo n) {
         	coordenadasCamino.add(0, n);
             return this;
-    }
+         }
 
        public ArrayList<Nodo> getCoordenadasCamino() {
 			return coordenadasCamino;
@@ -45,7 +45,7 @@ public class Recorrido {
 		public void setCoordenadasCamino(ArrayList<Nodo> coordenadasCamino) {
 			this.coordenadasCamino = coordenadasCamino;
 		}
-		// este añade el nodo al principio
+		// este aï¿½ade el nodo al principio
         public void prependWayPoint(Nodo n) {
                 coordenadasCamino.add(0, n);
         }

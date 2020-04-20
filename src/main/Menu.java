@@ -130,7 +130,7 @@ public class Menu {
 
 		int personas = disp*pers/100;
 		while (cont < personas){
-			// Elegimos un índice al azar
+			// Elegimos un ï¿½ndice al azar
 			int rN2 = random.nextInt(Integer.parseInt(lec.getDimensiones()[0]));
 			int rN1 = random.nextInt(Integer.parseInt(lec.getDimensiones()[1]));
 			if (!e.getPlanta().getObstacles().contains(new Coordenadas(rN2,rN1))&&!e.getPlanta().getDoors().contains(new Coordenadas(rN2,rN1))&&!nums.contains(new Coordenadas(rN2,rN1))) {
@@ -380,10 +380,10 @@ public class Menu {
 			List<Vertex<Nodo>> people, FicheroEdificio lec) {
 		
 		Coordenadas masPoblado = new Coordenadas(-1,-1);
-		int tamaño = 0;
+		int size = 0;
 		for(int recDim = 0; recDim<dims.size();recDim++) {
-			if (dims.get(recDim)>tamaño) {
-				tamaño = dims.get(recDim);
+			if (dims.get(recDim)>size) {
+				size = dims.get(recDim);
 				masPoblado = e.getPlanta().getDoors().get(recDim);
 			}
 		}
@@ -644,10 +644,10 @@ public class Menu {
 		menor = menorDim(dims, Integer.parseInt(lec.getDimensiones()[1])*Integer.parseInt(lec.getDimensiones()[0]));
 		
 		Coordenadas masPoblado = new Coordenadas(-1,-1);
-		int tamaño = 0;
+		int size = 0;
 		for(int recDim = 0; recDim<dims.size();recDim++) {
-			if (dims.get(recDim)>tamaño) {
-				tamaño = dims.get(recDim);
+			if (dims.get(recDim)>size) {
+				size = dims.get(recDim);
 				masPoblado = e.getPlanta().getDoors().get(recDim);
 			}
 		}
@@ -688,10 +688,10 @@ public class Menu {
 		int mayor = mayorDim(dims);
 		int menor = menorDim(dims, Integer.parseInt(lec.getDimensiones()[1])*Integer.parseInt(lec.getDimensiones()[0]));
 		Coordenadas masPoblado = new Coordenadas(-1,-1);
-		int tamaño = 0;
+		int size = 0;
 		for(int recDim = 0; recDim<dims.size();recDim++) {
-			if (dims.get(recDim)>tamaño&&!e.getPlanta().getDoors().get(recDim).equals(masP)) {
-				tamaño = dims.get(recDim);
+			if (dims.get(recDim)>size&&!e.getPlanta().getDoors().get(recDim).equals(masP)) {
+				size = dims.get(recDim);
 				masPoblado = e.getPlanta().getDoors().get(recDim);
 			}
 		}

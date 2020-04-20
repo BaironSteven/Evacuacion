@@ -1,6 +1,6 @@
 package Auxiliar;
 
-public class Tamaño {
+public class Size {
 	private int width;
 	private int height;
 	private int x;
@@ -9,7 +9,7 @@ public class Tamaño {
 	private int dimX;
 	private int dimY;
 	
-	public Tamaño(int x2, int y2, int width2, int height2) {
+	public Size(int x2, int y2, int width2, int height2) {
 		this.x = x2;
 		this.y = y2;
 		this.width = width2;

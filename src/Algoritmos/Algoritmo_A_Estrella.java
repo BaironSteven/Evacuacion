@@ -64,7 +64,7 @@ public class Algoritmo_A_Estrella {
 	                        Nodo actual = listaAbierta.getFirst();
 	
 	                        if(actual.getX() == door.getCoord_x() && actual.getY() == door.getCoord_Y()) {
-	                        	recorridos.add(reconstruirCamino(actual).añadirInicial(pos.getElement())); break;
+	                        	recorridos.add(reconstruirCamino(actual).addInicial(pos.getElement())); break;
 	                        }
 	
 	                        listaAbierta.remove(actual);
@@ -131,7 +131,7 @@ public class Algoritmo_A_Estrella {
                         Nodo actual = listaAbierta.getFirst();
 
                         if(actual.getX() == door.getCoord_x() && actual.getY() == door.getCoord_Y()) {
-                                recorridos.add(reconstruirCamino(actual).añadirInicial(pos.getElement())); break;
+                                recorridos.add(reconstruirCamino(actual).addInicial(pos.getElement())); break;
                         }
 
                         listaAbierta.remove(actual);
