@@ -104,7 +104,7 @@ public class FicheroPosiciones {
 		}
 
 		while (cont < num){
-			// Elegimos un �ndice al azar
+			// Elegimos un indice al azar
 			int rN2 = random.nextInt(Integer.parseInt(lec.getDimensiones()[0]));
 			int rN1 = random.nextInt(Integer.parseInt(lec.getDimensiones()[1]));
 			if (!list.contains(new Coordenadas(rN2,rN1))&&!posiciones.contains(new Coordenadas(rN2,rN1))) {

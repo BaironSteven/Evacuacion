@@ -91,7 +91,7 @@ public class Simulador extends javax.swing.JFrame{
 		//tEvac = new Timer(100,accionesEvac);
 	}
 
-	public void pararTimer() {
+	public void pararTimer(Timer t) {
 		// TODO Auto-generated constructor stub
 		t.stop();
 
@@ -146,8 +146,8 @@ public class Simulador extends javax.swing.JFrame{
 	}
 
 
-	private Timer t = new Timer(100,acciones);
-	private synchronized void iniciar(String edificio, String personas, int j) {
+
+	private synchronized void iniciar(String edificio, String personas, int j, Timer t) {
 		//t= new Timer(100, acciones);
 		//t.start();
 		ArrayList<Integer>squares = new ArrayList<>();
@@ -173,8 +173,8 @@ public class Simulador extends javax.swing.JFrame{
 		//elemsI = new ArrayList<>();
 		//t.start();
 
-		t = new Timer(100,acciones);
-		t.start();
+		//t = new Timer(100,acciones);
+		//t.start();
 		f = new Fuego();
 		if (j==3) {
 
@@ -205,15 +205,15 @@ public class Simulador extends javax.swing.JFrame{
 			col =obtenerColumna(elems,0);
 			iniciarElementos(elems,squares,doors,lec);
 		}
-		t.stop();
-		t = new Timer(100,accionesEvac);
+		//t.stop();
+		//t = new Timer(100,accionesEvac);
 		//t= new Timer(100,acciones);
 		//t.stop();
 		motor = new MotorGrafico(pizarra);
 		//tEvac.start();
 		t.start();
 		motor.start();
-		t.stop();
+		//t.stop();
 	}
 
 	private void iniciarElementos(Fuego f, ArrayList<Integer> squares, ArrayList<Integer> doors, FicheroEdificio lec) {
@@ -266,7 +266,7 @@ public class Simulador extends javax.swing.JFrame{
 	private void initialize() {
 		Dimension ss = Toolkit.getDefaultToolkit ().getScreenSize ();
 		Dimension frameSize = new Dimension ( 500, 300 );
-
+		Timer t = new Timer(100,accionesEvac);
 		frame = new JFrame ();
 		frame.setBounds ( ss.width / 2 - frameSize.width / 2,
 				ss.height / 2 - frameSize.height / 2,
@@ -374,7 +374,7 @@ public class Simulador extends javax.swing.JFrame{
 				  btnParar.setEnabled(true);
 				  btnExportar.setEnabled(true);
 				  if(motor==null) {
-					  iniciar(textField.getText(),textField_1.getText(), choice.getSelectedIndex()+1);
+					  iniciar(textField.getText(),textField_1.getText(), choice.getSelectedIndex()+1,t);
 					  pizarra.setBounds(0, 49, tam.getX()*10, tam.getY()*10);
 					  pizarra.setBackground(Color.WHITE);
 					  frame.getContentPane().add(pizarra);
@@ -415,7 +415,7 @@ public class Simulador extends javax.swing.JFrame{
 				hor = 0; hor1 = 0;
 				slider.setValue(50);
 				porcentajeDeEvacuacion = "50";
-				t= new Timer(100, acciones);
+				Timer t = new Timer(100, acciones);
 				//tEvac = new Timer(100,accionesEvac);
 				lec = new FicheroEdificio();
 			}
@@ -519,7 +519,7 @@ public class Simulador extends javax.swing.JFrame{
         JFileChooser fileChooser = new JFileChooser(".");      
         //Se crea el filtro. El primer par�metro es el mensaje que se muestra,
         //el segundo es la extensi�n de los ficheros que se van a mostrar      
-        FileFilter filtro = new FileNameExtensionFilter("Archivos java (.java)", "java"); 
+        FileFilter filtro = new FileNameExtensionFilter("Archivos txt (.txt)", "txt");
         //Se le asigna al JFileChooser el filtro
         fileChooser.setFileFilter(filtro);
         //se muestra la ventana
@@ -528,7 +528,7 @@ public class Simulador extends javax.swing.JFrame{
         if (valor == JFileChooser.APPROVE_OPTION) {
             ruta = fileChooser.getSelectedFile().getAbsolutePath();
         } else {
-            System.out.println("No se ha seleccionado ning�n fichero");
+            System.out.println("No se ha seleccionado ningun fichero");
         }
 		return ruta;
 	}
