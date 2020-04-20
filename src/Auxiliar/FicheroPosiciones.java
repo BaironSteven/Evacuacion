@@ -86,7 +86,7 @@ public class FicheroPosiciones {
 		posiciones = new ArrayList<>();
 		int per = Integer.parseInt(string);
 		int cont = 0;
-		// Conjunto de números ya usados
+		// Conjunto de nï¿½meros ya usados
 		int disp = 0;
 		for(Informacion baldosas:lec.getBaldosas()) {
 			if(baldosas.getPos()==1)
@@ -104,7 +104,7 @@ public class FicheroPosiciones {
 		}
 
 		while (cont < num){
-			// Elegimos un índice al azar
+			// Elegimos un ï¿½ndice al azar
 			int rN2 = random.nextInt(Integer.parseInt(lec.getDimensiones()[0]));
 			int rN1 = random.nextInt(Integer.parseInt(lec.getDimensiones()[1]));
 			if (!list.contains(new Coordenadas(rN2,rN1))&&!posiciones.contains(new Coordenadas(rN2,rN1))) {
