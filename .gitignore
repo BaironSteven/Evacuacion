@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io/api/java,maven,windows,eclipse
 # Edit at https://www.gitignore.io/?templates=java,maven,windows,eclipse
 
+!.target/Evacuacion-0.0.1-SNAPSHOT.jar
 ### Eclipse ###
 .metadata
 bin/
@@ -37,7 +38,6 @@ local.properties
 
 # sbteclipse plugin
 .target
-
 # Tern plugin
 .tern-project
 
