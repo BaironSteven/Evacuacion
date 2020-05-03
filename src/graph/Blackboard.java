@@ -1,16 +1,11 @@
 package graph;
 
-import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.ArrayList;
-import java.util.Vector;
-
-import javax.swing.JPanel;
-
 import material.Animable;
 import material.SimpleDrawable;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 public class Blackboard  extends JPanel{
 	ArrayList bd = new ArrayList();
@@ -49,6 +44,17 @@ public class Blackboard  extends JPanel{
 			}
 		}
 
+	}
+
+	public boolean isEmpty() {
+		for(Object node:bd) {
+			if(node instanceof Point2DAnimable)  {
+				if(!((Point2DAnimable) node).getMovimientos().isEmpty()){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	public Blackboard() {
