@@ -1,78 +1,38 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import Algoritmos.Recorrido;
 import Algoritmos.Nodo;
 import Auxiliar.Coordenadas;
+import Auxiliar.FicheroEdificio;
 import Auxiliar.FicheroPosiciones;
 import Auxiliar.Fuego;
-import Auxiliar.FicheroEdificio;
 import graph.ELGraph;
 import graph.Edificio;
 import graph.Informacion;
 import material.Vertex;
 
+import java.util.*;
+
 public class Menu {
 	
 	private static  Edificio e;
 	private static List<Coordenadas> fin;
-	private static List<Integer> opciones;
 	private static List<ArrayList<Coordenadas>> a;
 	private static Fuego fAUX;
 	private static List<ArrayList<Coordenadas>> b;
 	private static FicheroEdificio lec;
 	private static FicheroPosiciones pos;
-	private static ArrayList<Coordenadas> asignacion;
-	
+
 	public Menu() {
 		e = new Edificio();
 		fin = new ArrayList<>();
-		opciones = Arrays.asList(1,2,3,4);
 		a = new ArrayList<>();
 		fAUX = new Fuego();
 		b =new ArrayList<>();
 		lec = null;
 		pos = null;
-		ArrayList<Coordenadas> asignacion = new ArrayList<>();
 	}
 
-	
-	public static Edificio getE() {
-		return e;
-	}
 
-	public static void setE(Edificio e) {
-		Menu.e = e;
-	}
-
-	
-	private static Scanner sc;
-	
-	
-	
-	static <T> List<List<Integer>> transpose(List<ArrayList<Integer>> list) {
-        List<List<Integer>> ret = new ArrayList<List<Integer>>();
-        final int N = list.get(0).size();
-        for (int i = 0; i < N; i++) {
-            List<Integer> col = new ArrayList<>();
-            for (List<Integer> row : list) {
-                col.add(row.get(i));
-            }
-            ret.add(col);
-        }
-        return ret;
-    }
-	
 	private static void completarEstado(int mayor) {
 		for(int y=0;y<e.getPlanta().getEstado().size();y++) 
 			for(int k = e.getPlanta().getEstado().get(y).size();k<mayor;k++)
@@ -87,17 +47,17 @@ public class Menu {
 	
 	private static int mayorDim(ArrayList<Integer> dims) {
 		int ant =-1;
-		for(int i = 0; i<dims.size();i++) 
-			if(dims.get(i)>ant) 
-				ant = dims.get(i);
+		for (Integer dim : dims)
+			if (dim > ant)
+				ant = dim;
 		return ant;
 	}
 		
 	private static int menorDim(ArrayList<Integer> dims, int tam) {
 		int ant = tam;
-		for(int i = 0; i<dims.size();i++) 
-			if(dims.get(i)<ant) 
-				ant = dims.get(i);
+		for (Integer dim : dims)
+			if (dim < ant)
+				ant = dim;
 		return ant;
 	}
 	
@@ -107,47 +67,14 @@ public class Menu {
 				if((dims.get(i)<e.getPlanta().getEstado().get(size).size()-1)&&(e.getPlanta().getEstado().get(size).get(e.getPlanta().getEstado().get(size).size()-1).equals(e.getPlanta().getDoors().get(i))))
 					dims.set(i, e.getPlanta().getEstado().get(size).size()-1);
 	}
-	
-	private static void calcularDimAux(ArrayList<Integer> dims){
-		for(int i = 0;i<e.getPlanta().getDoors().size();i++)
-			for(int size = 0;size<e.getPlanta().getEstadoAux().size();size++) 
-				if((dims.get(i)<e.getPlanta().getEstadoAux().get(size).size()-1)&&(e.getPlanta().getEstadoAux().get(size).get(e.getPlanta().getEstadoAux().get(size).size()-1).equals(e.getPlanta().getDoors().get(i))))
-					dims.set(i, e.getPlanta().getEstadoAux().get(size).size()-1);
-	}
-	
-	private static Set<Coordenadas> generarNumsAleatorios(FicheroEdificio lec, int pers) {
-		int cont = 0;
-	
-		Set<Coordenadas> nums = new HashSet<>();
-		int disp = 0;
-		for(Informacion baldosas:lec.getBaldosas()) {
-			if(baldosas.getPos()==1)
-				disp++;
-		}
-		
-		// Instanciamos la clase Random
-		Random random = new Random();
 
-		int personas = disp*pers/100;
-		while (cont < personas){
-			// Elegimos un �ndice al azar
-			int rN2 = random.nextInt(Integer.parseInt(lec.getDimensiones()[0]));
-			int rN1 = random.nextInt(Integer.parseInt(lec.getDimensiones()[1]));
-			if (!e.getPlanta().getObstacles().contains(new Coordenadas(rN2,rN1))&&!e.getPlanta().getDoors().contains(new Coordenadas(rN2,rN1))&&!nums.contains(new Coordenadas(rN2,rN1))) {
-			      nums.add(new Coordenadas(rN2,rN1));
-			      cont ++;
-			}
-		}
-		return nums;
-	}
-	
-		
+
 	private static Vertex<Nodo> generarGraphAndPeople(ArrayList<Vertex<Nodo>> people, Set<Coordenadas> numbers, String[] dimensiones, Coordenadas posIniFuego,
 			ArrayList<Informacion> edificio) {
 
 		int x= Integer.parseInt(dimensiones[0]);
 		int y = Integer.parseInt(dimensiones[1]);
-		List<Vertex<Nodo>> l = new ArrayList<Vertex<Nodo>>();
+		List<Vertex<Nodo>> l = new ArrayList<>();
 		Vertex<Nodo> iniFuego = null;
 		Nodo nodoP;
 		Coordenadas coord;
@@ -220,7 +147,7 @@ public class Menu {
 		
 		int x= Integer.parseInt(dimensiones[0]);
 		int y = Integer.parseInt(dimensiones[1]);
-		List<Vertex<Nodo>> l = new ArrayList<Vertex<Nodo>>();
+		List<Vertex<Nodo>> l = new ArrayList<>();
 		ArrayList<Vertex<Nodo>> auxiliar = new ArrayList<>();
 		ArrayList<Coordenadas> auxiliarNum = new ArrayList<>();
 		Nodo nodoP;
@@ -248,11 +175,11 @@ public class Menu {
 		for(Coordenadas node : peopleAux) {
 			if(node.equals(new Coordenadas(-1,-1))) 
 				auxiliarNum.add(new Coordenadas(-1,-1));
-			else 
-				for(int k = 0; k< auxiliar.size();k++) 
-					if(auxiliar.get(k).getElement().getX()==node.getCoord_x() && auxiliar.get(k).getElement().getY()==node.getCoord_Y()) {
-						people.add(auxiliar.get(k));
-						auxiliarNum.add(new Coordenadas(auxiliar.get(k).getElement().getX(),auxiliar.get(k).getElement().getY()));
+			else
+				for (Vertex<Nodo> nodoVertex : auxiliar)
+					if (nodoVertex.getElement().getX() == node.getCoord_x() && nodoVertex.getElement().getY() == node.getCoord_Y()) {
+						people.add(nodoVertex);
+						auxiliarNum.add(new Coordenadas(nodoVertex.getElement().getX(), nodoVertex.getElement().getY()));
 					} 	
 		}
 		
@@ -300,11 +227,19 @@ public class Menu {
 	
 	
 	private static void generarEstadoParcial(List<Vertex<Nodo>> people) {
-		List<ArrayList<Coordenadas>> recorridos = new ArrayList<>();
-		for(int i = 0;i< people.size();i++) 
-			recorridos.add(e.getPlanta().getRecorridoMasCorto(people.get(i)));
+		ArrayList<ArrayList<Coordenadas>> recorridos = new ArrayList<>();
+		for (Vertex<Nodo> person : people) recorridos.add(e.getPlanta().getRecorridoMasCorto(person));
+		//e.getPlanta().setEstado(recorridos);
 	
 		e.getPlanta().actualizarEstado(recorridos);
+	}
+
+	private static void generarEstadoParcialSimple(List<Vertex<Nodo>> people) {
+		List<ArrayList<Coordenadas>> recorridos = new ArrayList<>();
+		for (Vertex<Nodo> person : people) recorridos.add(e.getPlanta().getRecorridoMasCorto(person));
+
+		e.getPlanta().actualizarEstadoParcial(recorridos);
+
 	}
 	
 	private static void inicializarDims(ArrayList<Integer> dims) {
@@ -313,60 +248,42 @@ public class Menu {
 	}
 
 	public static ArrayList<Coordenadas> obtenerColumna(List<ArrayList<Coordenadas>> matriz, int col) {
-    	ArrayList<Coordenadas> values = new ArrayList<Coordenadas>();
-    	for(int i=0; i<matriz.size(); i++)
-    		if(matriz.get(i).size()>col)
-    			values.add(matriz.get(i).get(col));
-    		else 
-    			values.add(new Coordenadas(-1,-1));
+    	ArrayList<Coordenadas> values = new ArrayList<>();
+		for (ArrayList<Coordenadas> coordenadas : matriz)
+			if (coordenadas.size() > col)
+				values.add(coordenadas.get(col));
+			else
+				values.add(new Coordenadas(-1, -1));
 		return values;
     }
 	
 
 	private static void generarEstadoParcialAux(List<Vertex<Nodo>> people, ArrayList<Coordenadas> asignaciones,FicheroEdificio lec) {
-		ArrayList<ArrayList<Coordenadas>> recorridosN = new ArrayList<ArrayList<Coordenadas>>();
-		for(int i = 0;i< people.size();i++) {
-			if (!asignaciones.get(people.get(i).getElement().getX()+people.get(i).getElement().getY()*Integer.parseInt(lec.getDimensiones()[0]))
-				.equals(new Coordenadas(-1,-1))) 
-				if (asignaciones.get(people.get(i).getElement().getX()+people.get(i).getElement().getY()*Integer.parseInt(lec.getDimensiones()[0]))
-						.equals(new Coordenadas(0,0))) 
-					recorridosN.add(e.getPlanta().getRecorridoMasCorto(people.get(i)));
-				else 
-					recorridosN.add(e.getPlanta().getRecorrido(people.get(i),
-							asignaciones.get(people.get(i).getElement().getX()+people.get(i).getElement().getY()*Integer.parseInt(lec.getDimensiones()[0]))));
+		ArrayList<ArrayList<Coordenadas>> recorridosN = new ArrayList<>();
+		for (Vertex<Nodo> person : people) {
+			if (!asignaciones.get(person.getElement().getX() + person.getElement().getY() * Integer.parseInt(lec.getDimensiones()[0]))
+					.equals(new Coordenadas(-1, -1)))
+				if (asignaciones.get(person.getElement().getX() + person.getElement().getY() * Integer.parseInt(lec.getDimensiones()[0]))
+						.equals(new Coordenadas(0, 0)))
+					recorridosN.add(e.getPlanta().getRecorridoMasCorto(person));
+				else
+					recorridosN.add(e.getPlanta().getRecorrido(person,
+							asignaciones.get(person.getElement().getX() + person.getElement().getY() * Integer.parseInt(lec.getDimensiones()[0]))));
 		}
 		ArrayList<ArrayList<Coordenadas>> recAux = (ArrayList<ArrayList<Coordenadas>>) eliminarRepetidos(recorridosN).clone();
 
 		e.getPlanta().actualizarEstadoAux(recAux);
-		recorridosN = new ArrayList<>();
-		recAux = new ArrayList<>();
-	}
-
-	private static ArrayList<ArrayList<Integer>> eliminarRepetidosInteger(ArrayList<ArrayList<Integer>> recorridosN) {
-		ArrayList<Integer> recorridosAux = new ArrayList<>();
-		ArrayList<ArrayList<Integer>> recorridosNAux = new ArrayList<>();
-		for(int i = 0; i<recorridosN.size(); i++) {
-			recorridosAux = new ArrayList<>();;
-			for(int j = 0; j<recorridosN.get(i).size();j++){
-				if(!recorridosAux.contains(recorridosN.get(i).get(j))) 
-					recorridosAux.add(recorridosN.get(i).get(j));
-			}
-
-			recorridosNAux.add(recorridosAux);
-		}
-
-		return recorridosNAux;
 	}
 
 	public static ArrayList<ArrayList<Coordenadas>> eliminarRepetidos(ArrayList<ArrayList<Coordenadas>> recorridosN) {
 		
-		ArrayList<Coordenadas> recorridosAux = new ArrayList<>();
+		ArrayList<Coordenadas> recorridosAux;
 		ArrayList<ArrayList<Coordenadas>> recorridosNAux = new ArrayList<>();
-		for(int i = 0; i<recorridosN.size(); i++) {
-			recorridosAux = new ArrayList<>();;
-			for(int j = 0; j<recorridosN.get(i).size();j++){
-				if(!recorridosAux.contains(recorridosN.get(i).get(j))) 
-					recorridosAux.add(recorridosN.get(i).get(j));
+		for (ArrayList<Coordenadas> coordenadas : recorridosN) {
+			recorridosAux = new ArrayList<>();
+			for (Coordenadas coordenada : coordenadas) {
+				if (!recorridosAux.contains(coordenada))
+					recorridosAux.add(coordenada);
 			}
 
 			recorridosNAux.add(recorridosAux);
@@ -390,7 +307,7 @@ public class Menu {
 		
 		Coordenadas coord0 = new Coordenadas(0,0);
 		int aTrasladar = 0;
-		Coordenadas destino = new Coordenadas(0,0);;
+		Coordenadas destino = new Coordenadas(0,0);
 		int altMasCorto = Integer.MAX_VALUE;
 		int nec;
 		int tiempoPuertaMasC=0;
@@ -417,7 +334,7 @@ public class Menu {
 				}
 			}
 		}
-		ArrayList<Coordenadas> col = new ArrayList<>();
+		ArrayList<Coordenadas> col;
 		int cont = 0;
 		int newTamMasPoblado = 0;
 		for(Coordenadas node:e.getPlanta().getDoors()) {
@@ -425,6 +342,7 @@ public class Menu {
 				break;
 			cont++;
 		}
+
 		int contAux = 0;
 		for(Coordenadas node:e.getPlanta().getDoors()) {
 			if(node.equals(masPoblado))
@@ -470,7 +388,7 @@ public class Menu {
 				
 		Coordenadas coord0 = new Coordenadas(0,0);
 		int aTrasladar = -1;
-		Coordenadas destino = new Coordenadas(0,0);;
+		Coordenadas destino = new Coordenadas(0,0);
 		int altMasCorto = Integer.MAX_VALUE;
 		int nec;
 		int tiempoPuertaMasC=0;
@@ -497,7 +415,7 @@ public class Menu {
 				}
 			}
 		}
-		ArrayList<Coordenadas> col = new ArrayList<>();
+		ArrayList<Coordenadas> col;
 		
 		if(aTrasladar == -1) return null;
 		
@@ -540,48 +458,82 @@ public class Menu {
 	}
 
 	
-	public static List<ArrayList<Coordenadas>> menu1(String[] args, FicheroEdificio lec2,int opcion) {
+	public List<ArrayList<Coordenadas>> menu1(String[] args, FicheroEdificio lec2,int opcion) {
 		
 		
 		lec = lec2;
 		for(int i = 0;i<lec.getBaldosas().size();i++)
 			if(lec.getBaldosas().get(i).getPos()==2)
 				fin.add(lec.getBaldosas().get(i).getCoord());
+
+		if(args[1].contains("."))
+			pos = new FicheroPosiciones(args[1],lec.getDimensiones());
+		else
+			pos = new FicheroPosiciones(args[1],lec);
 			
-		 a = algoritmoRutaMasCorta(args, opcion, lec);
+		 a = this.algoritmoRutaMasCorta(args, opcion, lec, pos);
 				
 
 		return a;
 		
 	}
-	public static List<ArrayList<Coordenadas>> menu2(String[] args, FicheroEdificio lec2,int opcion) {
+
+	public List<ArrayList<Coordenadas>> menu1(String[] args, FicheroEdificio lec2,int opcion, FicheroPosiciones pos) {
+
+
+		lec = lec2;
+		for(int i = 0;i<lec.getBaldosas().size();i++)
+			if(lec.getBaldosas().get(i).getPos()==2)
+				fin.add(lec.getBaldosas().get(i).getCoord());
+
+		a = this.algoritmoRutaMasCorta(args, opcion, lec, pos);
+
+
+		return a;
+
+	}
+
+	public List<ArrayList<Coordenadas>> menu2(String[] args, FicheroEdificio lec2,int opcion) {
 		
 		lec = lec2;
 		for(int i = 0;i<lec.getBaldosas().size();i++)
 			if(lec.getBaldosas().get(i).getPos()==2)
 				fin.add(lec.getBaldosas().get(i).getCoord());
-		 b = algoritmoEficiente(args, opcion, lec);
+
+		if(args[1].contains("."))
+			pos = new FicheroPosiciones(args[1],lec.getDimensiones());
+		else
+			pos = new FicheroPosiciones(args[1],lec);
+
+		 b = this.algoritmoEficiente(args, opcion, lec,pos);
 		 return b;
 		 
 	}
+
+	public List<ArrayList<Coordenadas>> menu2(String[] args, FicheroEdificio lec2,int opcion, FicheroPosiciones pos) {
+
+		lec = lec2;
+		for(int i = 0;i<lec.getBaldosas().size();i++)
+			if(lec.getBaldosas().get(i).getPos()==2)
+				fin.add(lec.getBaldosas().get(i).getCoord());
+
+		b = this.algoritmoEficiente(args, opcion, lec,pos);
+		return b;
+
+	}
 		
 
-	private static List<ArrayList<Coordenadas>> algoritmoRutaMasCorta(String [] args, int opcion, FicheroEdificio lec) {
+	private List<ArrayList<Coordenadas>> algoritmoRutaMasCorta(String[] args, int opcion, FicheroEdificio lec, FicheroPosiciones pos) {
 		
 		Set<Coordenadas> numbers = new HashSet<>();
-		
-		if(args[1].contains("."))
-			pos = new FicheroPosiciones(args[1],lec.getDimensiones());	
-		else 
-			pos = new FicheroPosiciones(args[1],lec);
-		
-		for (int num = 0; num<pos.getNum(); num++)
+
+		for (int num = 0; num< pos.getNum(); num++)
 			numbers.add(pos.getPosiciones().get(num));
 
-		int mayor = 0;
+		int mayor;
 	
 		List<Vertex<Nodo>> people = new ArrayList<>();
-		people = generarGraphAndPeople(people, lec.getDimensiones(),numbers, lec.getBaldosas());
+		generarGraphAndPeople(people, lec.getDimensiones(), numbers, lec.getBaldosas());
 		e.getPlanta().setDims(lec);
 		e.getPlanta().setAlgSeleccionado(opcion);			
 		
@@ -600,22 +552,17 @@ public class Menu {
 
 	}
 
-	private static List<ArrayList<Coordenadas>> algoritmoEficiente(String args[], int opcion, FicheroEdificio lec) {
+	private List<ArrayList<Coordenadas>> algoritmoEficiente(String[] args, int opcion, FicheroEdificio lec, FicheroPosiciones pos) {
 		
 		Set<Coordenadas> numbers = new HashSet<>();
 
-		if(args[1].contains("."))
-			pos = new FicheroPosiciones(args[1],lec.getDimensiones());	
-		else
-			pos = new FicheroPosiciones(args[1],lec);
-		
-		for (int num = 0; num<pos.getNum(); num++)
+		for (int num = 0; num< pos.getNum(); num++)
 			numbers.add(pos.getPosiciones().get(num));
-		int mayor = 0, menor = 0, mayor1 = 0, menor1 = 0;
+		int mayor, menor, mayor1, menor1;
 
 		List<Vertex<Nodo>> people = new ArrayList<>();
 		List<Coordenadas> posiciones = new ArrayList<>();
-		people = generarGraphAndPeople(people, lec.getDimensiones(),numbers, lec.getBaldosas());
+		generarGraphAndPeople(people, lec.getDimensiones(), numbers, lec.getBaldosas());
 		e.getPlanta().setDims(lec);
 		e.getPlanta().setAlgSeleccionado(opcion);
 		
@@ -627,8 +574,8 @@ public class Menu {
 		}
 		
 		generarEstadoParcial(people);
-		
-		asignacion = new ArrayList<>();
+
+		ArrayList<Coordenadas> asignacion = new ArrayList<>();
 		
 		for(int t0 = 0; t0< Integer.parseInt(lec.getDimensiones()[1]);t0++)
 			for(int t1 = 0; t1< Integer.parseInt(lec.getDimensiones()[0]);t1++)
@@ -652,17 +599,17 @@ public class Menu {
 			}
 		}
 
-		
-		Coordenadas dest = trasladar(dims,asignacion,people,lec);
+
+		Coordenadas dest = trasladar(dims, asignacion,people,lec);
 		mayor1 = mayorDim(dims);
 		menor1 = menorDim(dims, Integer.parseInt(lec.getDimensiones()[1])*Integer.parseInt(lec.getDimensiones()[0]));
 
 		if(menor1<mayor1)
 		while (menor<mayor-1) {
 
-			dest =  trasladar(dims,asignacion,people,lec);
+			dest =  trasladar(dims, asignacion,people,lec);
 
-			if(dest.equals(masPoblado)) trasladarSigMasPoblado(masPoblado,dims,people,asignacion); 
+			if(dest.equals(masPoblado)) trasladarSigMasPoblado(masPoblado,dims,people, asignacion);
 			
 			int diff1 = mayor1-mayor;
 			mayor = mayor1;
@@ -720,13 +667,13 @@ public class Menu {
 	}
 
 
-	private static List<Vertex<Nodo>> generarGraphAndPeople(List<Vertex<Nodo>> people, String[] dimensiones,
-			Set<Coordenadas> numbers, ArrayList<Informacion>edificio) {
+	private static void generarGraphAndPeople(List<Vertex<Nodo>> people, String[] dimensiones,
+											  Set<Coordenadas> numbers, ArrayList<Informacion>edificio) {
 
 		int x = Integer.parseInt(dimensiones[0]);
 		int y = Integer.parseInt(dimensiones[1]);
 		Nodo nodoP;
-		List<Vertex<Nodo>> l = new ArrayList<Vertex<Nodo>>();
+		List<Vertex<Nodo>> l = new ArrayList<>();
 		Coordenadas coord;
 		for( int i = 0 ; i < x; i++ ){
 			for(int j = 0; j <y; j++) {
@@ -789,53 +736,47 @@ public class Menu {
 				}
 			}
 		}
-		
-		return people;
+
 	}
 
-	private static Fuego algoritmoFuego(String [] args, int opcion, FicheroEdificio lec) {
-		
+	private Fuego algoritmoFuego(String [] args, int opcion, FicheroEdificio lec, FicheroPosiciones pos) {
+
 		Set<Coordenadas> auxFuego = new HashSet<>();
 		Set<Coordenadas> numbers = new HashSet<>();
-		int cont = 0; 
-		
-		if(args[1].contains("."))
-			pos = new FicheroPosiciones(args[1],lec.getDimensiones());	
-		else
-			pos = new FicheroPosiciones(args[1],lec);
+		int cont = 0;
 
 		for (int num = 0; num<pos.getNum(); num++)
 			numbers.add(pos.getPosiciones().get(num));
-		
-		int posAux = 0;
+
+		int posAux;
 
 		posAux = pos.getNum();
-		int mayor0 = 0;
+		int mayor0;
 
 		ArrayList<Vertex<Nodo>> people = new ArrayList<>();
 		ArrayList<Coordenadas> peopleAux = new ArrayList<>();
 		List<Coordenadas> posiciones = new ArrayList<>();
-		
+
 		Random random = new Random();
 		Coordenadas posIniFuego = new Coordenadas(-1,-1);
 		while (posIniFuego.equals(new Coordenadas(-1,-1))){
 			int rN2 = random.nextInt(Integer.parseInt(lec.getDimensiones()[0]));
 			int rN1 = random.nextInt(Integer.parseInt(lec.getDimensiones()[1]));
 			if (!numbers.contains(new Coordenadas(rN2,rN1))&&!e.getPlanta().getDoors().contains(new Coordenadas(rN2,rN1))&&!e.getPlanta().getObstacles().contains(new Coordenadas(rN2,rN1)))
-			      posIniFuego = new Coordenadas(rN2,rN1);
+				posIniFuego = new Coordenadas(rN2,rN1);
 		}
-		
+
 		Vertex<Nodo> vertexFuego = generarGraphAndPeople(people,numbers,lec.getDimensiones(), posIniFuego, lec.getBaldosas());
 		e.getPlanta().setAlgSeleccionado(opcion);
 		e.getPlanta().setDims(lec);
-		for(Vertex<Nodo> ins : people) 
+		for(Vertex<Nodo> ins : people)
 			auxFuego.add(new Coordenadas(ins.getElement().getX(),ins.getElement().getY()));
-		
-		for(Vertex<Nodo> posit : people) 
-			posiciones.add(new Coordenadas(posit.getElement().getX(),posit.getElement().getY()));		
-		
+
+		for(Vertex<Nodo> posit : people)
+			posiciones.add(new Coordenadas(posit.getElement().getX(),posit.getElement().getY()));
+
 		ArrayList<ArrayList<Nodo>> fuego = e.getPlanta().comportamientoFuego(vertexFuego);
-		
+
 		ArrayList<ArrayList<Coordenadas>> posFuego = new ArrayList<>();
 		ArrayList<Coordenadas> posFuegoAux = new ArrayList<>();
 		ArrayList<ArrayList<Coordenadas>> posFuegoCS = new ArrayList<>();
@@ -853,25 +794,42 @@ public class Menu {
 			peopleAux.add(new Coordenadas(bup.getElement().getX(),bup.getElement().getY()));
 		}
 		ArrayList<ArrayList<Coordenadas>> estadoAux = new ArrayList<>();
-		
+
 		ArrayList<Coordenadas> estA = new ArrayList<>();
 		int contF = 0;
 		ArrayList<Coordenadas> lista = new ArrayList<>();
 		ArrayList<Coordenadas> listaAux = new ArrayList<>();
 		e.getPlanta().setPosFuego(posFuego);
+		boolean puertasBloq = false;
+		int numPuertasBloq = 0;
 
-		while(auxFuego.size()!=1&&posFuegoCS.get(contF).contains(new Coordenadas(-1,-1))) {
-			
-			if(contF!=0)if(posFuegoCS.get(contF).contains(e.getPlanta().getDoors().get(0))
-					&&posFuegoCS.get(contF).contains(e.getPlanta().getDoors().get(1)))break;
+		while(auxFuego.size()!=0&&posFuegoCS.get(contF).contains(new Coordenadas(-1,-1))) {
+
+			if(auxFuego.size()==1 && auxFuego.contains(new Coordenadas(-1,-1)))
+				break;
+
+			numPuertasBloq = 0;
+			for(int door = 0; door< e.getPlanta().getDoors().size();door++) {
+				if (posFuegoCS.get(contF).contains(e.getPlanta().getDoors().get(door)))
+					numPuertasBloq++;
+				if (numPuertasBloq == e.getPlanta().getDoors().size())
+					puertasBloq = true;
+			}
+
+			if(contF!=0)
+				if(puertasBloq)
+					break;
+
 			e.getPlanta().setAlgSeleccionado(opcion);
 			e.getPlanta().setDims(lec);
-			if(cont%3==0) {
+			//if(cont%3==0) {
 				for(Vertex<Nodo> node : people) {
-						node.exec(); 
-				}	
-			}
-			generarEstadoParcial(people);
+					node.exec();
+				}
+			//}
+
+			generarEstadoParcialSimple(people);
+
 			if(contF == 0) {
 				ArrayList<Vertex<Nodo>> estructura = (ArrayList<Vertex<Nodo>>) people.clone();
 				for(Vertex<Nodo>first : estructura)
@@ -882,17 +840,11 @@ public class Menu {
 			inicializarDims(dims);
 			calcularDim(dims);
 			mayor0 = mayorDim(dims);
-			auxFuego = new HashSet<>();
-	
-			completarEstado(mayor0+1);	
-			for(Coordenadas pers : peopleAux) {
-				auxFuego.add(pers);
-			}
-			peopleAux = new ArrayList<>();
-		
-			for(Coordenadas f1 : obtenerColumna(e.getPlanta().getEstado(),cont%3+1)) {
-				peopleAux.add(f1);	
-			}
+
+			completarEstado(mayor0+1);
+			auxFuego = new HashSet<>(peopleAux);
+
+			peopleAux = new ArrayList<>(obtenerColumna(e.getPlanta().getEstado(), 1));
 
 			for(int k0 = 0;k0<listaAux.size();k0++){
 				if( listaAux.get(k0).equals(new Coordenadas(-1,-1))) {
@@ -900,35 +852,36 @@ public class Menu {
 				}
 			}
 			for(int aux = 0; aux<peopleAux.size();aux++)
-				if(posFuego.get(0).contains(peopleAux.get(aux)))	
+				if(posFuego.get(0).contains(peopleAux.get(aux)))
 					peopleAux.set(aux, new Coordenadas(-1,-1));
-			
+
 			people = new ArrayList<>();
-			if(cont%3==0) {
-				e.setPlanta(new ELGraph<Nodo,Integer>());
-			}
+			//if(cont%3==0) {
+				e.setPlanta(new ELGraph<>());
+			//}
 			lista = generarGraphAndPeopleAuxFuego(peopleAux, people, lec.getDimensiones(),lec.getBaldosas());
 			listaAux = (ArrayList<Coordenadas>) lista.clone();
 			estadoAux.add(lista);
 			posFuego.remove(0);
-			
+
 			for(int l=0; l<listaAux.size(); l++)
-				if(posFuego.get(0).contains(listaAux.get(l))) 
+				if(posFuego.get(0).contains(listaAux.get(l)))
 					listaAux.set(l, new Coordenadas(-1,-1));
-			
+
 			if(auxFuego.size()!=1&&posFuegoCS.get(contF+1).contains(-1))
 				for(int p = 0; p<people.size();p++)
 					if(posFuego.get(0).contains(new Coordenadas(people.get(p).getElement().getX(),people.get(p).getElement().getY())))
 						people.remove(p);
+
 			e.getPlanta().setPosFuego(posFuego);
 			contF++;
 			cont++;
-		}	
+		}
 		ArrayList<Integer> hlp = new ArrayList<>();
 		for(int hp = 0;hp < posAux;hp++)
 			hlp.add(-1);
-		if(estadoAux.get(estadoAux.size()-2).equals(hlp))
-			estadoAux.remove(estadoAux.size()-1);
+		//if(estadoAux.get(estadoAux.size()-2).equals(hlp))
+		//	estadoAux.remove(estadoAux.size()-1);
 		Fuego f = new Fuego();
 		posFuegoCS.add(0,posFuegoCS.get(0));
 		f.setEstado(estadoAux);
@@ -937,9 +890,20 @@ public class Menu {
 
 	}
 
-	public static Fuego menuF(String[] s, FicheroEdificio lec, int opcion) {
-		fAUX = algoritmoFuego(s, opcion, lec);
+	public Fuego menuF(String[] s, FicheroEdificio lec, int opcion) {
+		if(s[1].contains("."))
+			pos = new FicheroPosiciones(s[1],lec.getDimensiones());
+		else
+			pos = new FicheroPosiciones(s[1],lec);
+
+		fAUX = algoritmoFuego(s, opcion, lec, pos);
 		return fAUX;
 	}
-	
+
+	public Fuego menuF(String[] s, FicheroEdificio lec, int opcion, FicheroPosiciones pos) {
+
+		fAUX = algoritmoFuego(s, opcion, lec, pos);
+		return fAUX;
+	}
+
 }

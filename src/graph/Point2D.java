@@ -3,16 +3,23 @@
  */
 package graph;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import material.SimpleDrawable;
+
+import java.awt.*;
 
 /**
  * @author Bairon
  *
  */
 public class Point2D implements SimpleDrawable {
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
 
 	int x=0;
 	int y=0;
@@ -49,5 +56,6 @@ public class Point2D implements SimpleDrawable {
 		g.setColor(Color.black);
 		g.drawOval(x-1, y-1, width, height);
 	}
+
 
 }

@@ -1,11 +1,18 @@
 package graph;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import material.SimpleDrawable;
 
+import java.awt.*;
+
 public class Door2D implements SimpleDrawable {
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
 
 	int x=0;
 	int y=0;
@@ -45,5 +52,12 @@ public class Door2D implements SimpleDrawable {
 		g.fillRect(x-1, y-1, dimX, dimY);
 		g.setColor(Color.green);
 		g.drawRect(x-1, y-1, dimX, dimY);
+	}
+
+	public void resize(int i, int i1, int dimX, int dimY) {
+		this.x = i;
+		this.y = i1;
+		this.dimX = dimX;
+		this.dimY = dimY;
 	}
 }

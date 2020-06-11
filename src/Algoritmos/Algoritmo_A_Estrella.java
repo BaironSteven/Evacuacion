@@ -1,22 +1,14 @@
 package Algoritmos;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
 import Auxiliar.Coordenadas;
 import Heuristica.DistanciaLineaRecta;
 import Heuristica.InterfazHeuristica;
 import graph.ELGraph;
-import graph.Informacion;
 import material.Graph;
 import material.ListaNodosOrdenados;
-import material.Position;
 import material.Vertex;
+
+import java.util.ArrayList;
 
 
 public class Algoritmo_A_Estrella {
@@ -144,7 +136,7 @@ public class Algoritmo_A_Estrella {
                                         continue;
 
                                 if (!vecino.isObstacle()&&
-                                		!(elGraph.getPosFuego().get(0).contains(new Coordenadas(vecino.getX(),vecino.getY())))) {
+                                		!(elGraph.getPosFuego().get(1).contains(new Coordenadas(vecino.getX(),vecino.getY())))) {
 
                                         float distanciaDesdeElPrincipioAlVecino = (actual.getDistanceFromStart() 
                                         		+ elGraph.getDistanceBetween(actual, vecino));

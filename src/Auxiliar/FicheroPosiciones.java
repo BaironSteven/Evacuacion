@@ -1,14 +1,12 @@
 package Auxiliar;
 
+import graph.Informacion;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
-
-import graph.Informacion;
 
 public class FicheroPosiciones {
 	int num;
@@ -17,16 +15,9 @@ public class FicheroPosiciones {
 		return num;
 	}
 
-	public void setNum(int num) {
-		this.num = num;
-	}
 
 	public ArrayList<Coordenadas> getPosiciones() {
 		return posiciones;
-	}
-
-	public static void setPosiciones(ArrayList<Coordenadas> posiciones) {
-		FicheroPosiciones.posiciones = posiciones;
 	}
 
 	private static ArrayList<Coordenadas> posiciones;

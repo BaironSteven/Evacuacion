@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="main.Simulador">
+  <grid id="27dc6" binding="panel" layout-manager="GridLayoutManager" row-count="21" column-count="15" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="1547" height="751"/>
+    </constraints>
+    <properties>
+      <enabled value="true"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="7911f" class="javax.swing.JLabel" binding="lblCalc">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Tiempo cálculo de Ruta"/>
+        </properties>
+      </component>
+      <grid id="cf594" binding="blackboard" custom-create="true" layout-manager="GridBagLayout">
+        <constraints>
+          <grid row="2" column="1" row-span="13" col-span="6" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-769"/>
+        </properties>
+        <border type="none"/>
+        <children/>
+      </grid>
+      <component id="66a15" class="javax.swing.JButton" binding="seleccionarButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="13" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Seleccionar"/>
+        </properties>
+      </component>
+      <component id="ab6f9" class="javax.swing.JButton" binding="seleccionarButton1" default-binding="true">
+        <constraints>
+          <grid row="6" column="13" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Seleccionar"/>
+        </properties>
+      </component>
+      <component id="95b51" class="javax.swing.JTextField" binding="txtFieldFicheroPersonas">
+        <constraints>
+          <grid row="6" column="8" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="28916" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="5" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Fichero Personas:"/>
+        </properties>
+      </component>
+      <component id="4be9a" class="javax.swing.JTextField" binding="txtFieldFicheroEdificio">
+        <constraints>
+          <grid row="4" column="8" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="d8243" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Fichero Edificio:"/>
+        </properties>
+      </component>
+      <hspacer id="34862">
+        <constraints>
+          <grid row="7" column="7" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <component id="fdcdd" class="javax.swing.JButton" binding="pararButton" default-binding="true">
+        <constraints>
+          <grid row="18" column="8" row-span="1" col-span="6" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Parar"/>
+        </properties>
+      </component>
+      <component id="9a03f" class="javax.swing.JButton" binding="iniciarButton" default-binding="true">
+        <constraints>
+          <grid row="17" column="8" row-span="1" col-span="6" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Iniciar"/>
+        </properties>
+      </component>
+      <component id="65f8d" class="javax.swing.JButton" binding="genEdificioButton" default-binding="true">
+        <constraints>
+          <grid row="15" column="8" row-span="2" col-span="4" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Gen. Edificio"/>
+        </properties>
+      </component>
+      <component id="eac90" class="javax.swing.JButton" binding="genPersButton" default-binding="true">
+        <constraints>
+          <grid row="15" column="12" row-span="2" col-span="2" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Gen. Pers."/>
+        </properties>
+      </component>
+      <hspacer id="c7388">
+        <constraints>
+          <grid row="17" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="c2ea0">
+        <constraints>
+          <grid row="17" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <component id="a4524" class="javax.swing.JLabel" binding="lblPersIni">
+        <constraints>
+          <grid row="18" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Personas al comiezo de la simulación:"/>
+        </properties>
+      </component>
+      <component id="33d0e" class="javax.swing.JLabel" binding="lblPersRest">
+        <constraints>
+          <grid row="17" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Personas restantes en el edificio:"/>
+        </properties>
+      </component>
+      <component id="d031f" class="javax.swing.JLabel" binding="lblPersEvac">
+        <constraints>
+          <grid row="16" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Personas evacuadas:"/>
+        </properties>
+      </component>
+      <component id="2642a" class="javax.swing.JSlider" binding="slider">
+        <constraints>
+          <grid row="14" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="10" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="fa0a8" class="javax.swing.JButton" binding="exportarButton" default-binding="true">
+        <constraints>
+          <grid row="14" column="12" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Exportar"/>
+        </properties>
+      </component>
+      <component id="7949f" class="javax.swing.JLabel" binding="lblporcentajeOcupacion">
+        <constraints>
+          <grid row="13" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Porcentaje de Ocupación: 5%"/>
+        </properties>
+      </component>
+      <component id="1f63b" class="javax.swing.JButton" binding="acelerarButton" default-binding="true">
+        <constraints>
+          <grid row="19" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Acelerar"/>
+        </properties>
+      </component>
+      <component id="bf518" class="javax.swing.JButton" binding="cancelarButton" default-binding="true">
+        <constraints>
+          <grid row="19" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Cancelar"/>
+        </properties>
+      </component>
+      <component id="7f23b" class="javax.swing.JButton" binding="reiniciarButton" default-binding="true">
+        <constraints>
+          <grid row="19" column="8" row-span="1" col-span="6" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Reiniciar"/>
+        </properties>
+      </component>
+      <component id="965cf" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="20" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="cff06" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="74730" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="14" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="10590" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <hspacer id="835a3">
+        <constraints>
+          <grid row="17" column="4" row-span="1" col-span="2" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <component id="f3a6b" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="15" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="ffab9" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="7" column="8" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="6542e" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="8" column="8" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="12c2e" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="11" column="8" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="cf471" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="12" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="36d9a" class="javax.swing.JLabel" binding="lblTimeEvac">
+        <constraints>
+          <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="193" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="00 : 00 : 00"/>
+        </properties>
+      </component>
+      <component id="99787" class="javax.swing.JLabel" binding="lblEvac">
+        <constraints>
+          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="244" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Tiempo de Evacuación"/>
+        </properties>
+      </component>
+      <component id="7f09f" class="javax.swing.JLabel" binding="lblTimeCalc">
+        <constraints>
+          <grid row="1" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="00 : 00 : 00"/>
+        </properties>
+      </component>
+      <component id="671e4" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+        <constraints>
+          <grid row="9" column="11" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="3cd8e" class="javax.swing.JLabel" binding="lblAlgoritmo">
+        <constraints>
+          <grid row="9" column="8" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Algoritmo:"/>
+        </properties>
+      </component>
+      <vspacer id="1daa5">
+        <constraints>
+          <grid row="10" column="9" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <vspacer id="ae15e">
+        <constraints>
+          <grid row="8" column="10" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <component id="205da" class="javax.swing.JLabel" binding="lblCalculando">
+        <constraints>
+          <grid row="18" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

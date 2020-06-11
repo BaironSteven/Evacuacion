@@ -1,156 +1,139 @@
 package main;
 
-import Auxiliar.Coordenadas;
-import Auxiliar.FicheroEdificio;
-import Auxiliar.Fuego;
-import Auxiliar.Size;
+import Auxiliar.*;
 import graph.*;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.List;
-import java.util.Scanner;
 
-public class Simulador extends javax.swing.JFrame{
+public class Simulador{
 
-	private JFrame frame;
-	private JTextField textField;
-	private JTextField textField_1;
+	private static boolean stateParada;
+	private JButton acelerarButton;
+	private JButton cancelarButton;
+	private JTextField txtFieldFicheroEdificio;
+	private JButton seleccionarButton;
+	private JTextField txtFieldFicheroPersonas;
+	private JButton seleccionarButton1;
+	private JSlider slider;
+	private JButton exportarButton;
+	private JButton genEdificioButton;
+	private JButton iniciarButton;
+	private JButton pararButton;
+	private JButton reiniciarButton;
+	private JButton genPersButton;
+	private JComboBox comboBox1;
+	private JLabel lblAlgoritmo;
+	private JLabel lblPersIni;
+	private JLabel lblPersRest;
+	private JLabel lblPersEvac;
+	private JLabel lblporcentajeOcupacion;
+	private JLabel lblTimeEvac;
+	private JLabel lblEvac;
+	private JLabel lblTimeCalc;
+	private JLabel lblCalc;
+	private JLabel lblCalculando;
+	private JPanel blackboard;
+	private JPanel panel;
+
+
 	protected String ficheroPersonas;
 	protected String ficheroEdificio;
-	Blackboard pizarra = new Blackboard();
+	//Blackboard blackboard = new Blackboard();
 	MotorGrafico motor = null;
 	Menu m;
 	ArrayList<Coordenadas> col = new ArrayList<>();
-	private static List<Integer> opciones = Arrays.asList(1,2,3,4);
 	int ds = 0; int ds1 = 0;
 	int seg = 0; int seg1 = 0;
 	int min = 0; int min1 = 0;
 	int hor = 0; int hor1 = 0;
-	boolean estadoCronometro = false;
-	private String porcentajeDeEvacuacion;
-	int x,y, w, h;
-	Size tam;
-	FicheroEdificio lec;
-	private static Simulador window;
+	long interval = 666;
+	long velocidad = 1;
+	private String porcentajeOcupacion;
+	static Size tam;
+	static FicheroEdificio lec;
+	FicheroPosiciones pos;
+
+	Thread motorGrafic;
+	Thread alg;
 
 	Fuego f;
 	List<ArrayList<Coordenadas>> elems;
-	/**
-	 * Launch the application.
-	 */
+	private static Simulador window;
+
+
+	private boolean state;
+	private boolean motorState;
+	private boolean state1;
+	private int numStart;
+	private int contPers;
+	private boolean finSim;
+	private Thread tCalc;
+	private boolean stateCalc = true;
+	private static JFrame frame;
+	private Thread etiquetaPers;
+
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					window = new Simulador();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
+		frame = new JFrame("Simulador");
+		frame.setContentPane(new Simulador().panel);
+
+		stateParada = true;
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+	}
+
+	private void resize() {
+		if(lec!=null) {
+			tam = new Size(Integer.parseInt(lec.getDimensiones()[0]), Integer.parseInt(lec.getDimensiones()[1]),
+					blackboard.getWidth(), blackboard.getHeight());
+			tam.calcDims();
+			for (Object component: ((Blackboard)blackboard).getBd()) {
+				if (component instanceof Point2DAnimable) {
+					((Point2DAnimable) component).resize(((Point2DAnimable) component).getX() * tam.getDimX(),
+							(((Point2DAnimable) component).getY() * tam.getDimY()), (tam.getDimX()), (tam.getDimY()));
+				} else if (component instanceof Square2D) {
+					((Square2D) component).resize((((Square2D)component).getX()*tam.getDimX()),
+							((((Square2D)component).getY())*tam.getDimY()),
+							(tam.getDimX()), (tam.getDimY()));
+				} else if (component instanceof Door2D) {
+					((Door2D) component).resize((((Door2D)component).getX()*tam.getDimX()),
+							((((Door2D)component).getY())*tam.getDimY()),
+							(tam.getDimX()), (tam.getDimY()));
 				}
 			}
-		});
-	}
-
-
-	public Simulador() throws HeadlessException {
-		// TODO Auto-generated constructor stub
-		initialize();
-
-		//tEvac = new Timer(100,accionesEvac);
-	}
-
-	public void pararTimer(Timer t) {
-		// TODO Auto-generated constructor stub
-		t.stop();
-
-		//tEvac = new Timer(100,accionesEvac);
-	}
-
-	private ActionListener acciones = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent ae) {
-			ds++;
-			if(ds==10) {
-				ds=0;
-				++seg;
-			}
-			if(seg==60) {
-				seg=0;
-				++min;
-			}
-			if(min==60) {
-				min=0;
-				++hor;
-			}
-			actualizarLabel();
+			((Blackboard)blackboard).repaint();
 		}
-	};
-	private ActionListener accionesEvac = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent ae) {
-			ds1++;
-			if(ds1==10) {
-				ds1=0;
-				++seg1;
-			}
-			if(seg1==60) {
-				seg1=0;
-				++min1;
-			}
-			if(min1==60) {
-				min1=0;
-				++hor1;
-			}
-			actualizarLabelEvac();
-		}
-	};
-	private void actualizarLabel() {
-		String tiempo = (hor <= 9 ? "0" : "") + hor + " : " + (min <= 9 ? "0" : "") + min + " : " +(seg <= 9 ? "0" :"") + seg + " : " + ds;
-		((JLabel)this.frame.getContentPane().getComponent(12)).setText(tiempo);
-	}
-	private void actualizarLabelEvac() {
-		String tiempoAux = (hor1 <= 9 ? "0" : "") + hor1 + " : " + (min1 <= 9 ? "0" : "") + min1 + " : " +(seg1 <= 9 ? "0" :"") + seg1 + " : " + ds1;
-		((JLabel)this.frame.getContentPane().getComponent(15)).setText(tiempoAux);
 	}
 
-
-
-	private synchronized void iniciar(String edificio, String personas, int j, Timer t, double escala) throws InterruptedException {
+	private synchronized void iniciar(String edificio, String personas, int j) {
 		//t= new Timer(100, acciones);
 		//t.start();
+
 		ArrayList<Integer>squares = new ArrayList<>();
 		ArrayList<Integer>doors = new ArrayList<>();
+
 		String [] s = new String[2];
 		m = new Menu();
 		s[0] = edificio;
 		if(!personas.equals(""))
 			s[1] = personas;
 		else
-			s[1]=porcentajeDeEvacuacion;
+		if(pos==null)
+			s[1]=porcentajeOcupacion;
+		else
+			s[1] = "Vacio";
 
-		lec = new FicheroEdificio(s[0]);
-		for(int i = 0;i<lec.getBaldosas().size();i++) {
-			if(lec.getBaldosas().get(i).getPos()==0)
-				squares.add(i);
-			if(lec.getBaldosas().get(i).getPos()==2)
-				doors.add(i);
-		}
-		tam = new Size(Integer.parseInt(lec.getDimensiones()[0]),Integer.parseInt(lec.getDimensiones()[1]),
-				(int) (Integer.parseInt(lec.getDimensiones()[0])*10*escala),
-				(int)(Integer.parseInt(lec.getDimensiones()[1])*10*escala));
-		tam.calcDims();
 		elems = new ArrayList<>();
 		//elemsI = new ArrayList<>();
 		//t.start();
@@ -158,382 +141,630 @@ public class Simulador extends javax.swing.JFrame{
 		//t = new Timer(100,acciones);
 		//t.start();
 		f = new Fuego();
-		if (j==3) {
 
-			f = m.menuF(s,lec,j);
-			col = obtenerColumna(f.getEstado(),0);
-			iniciarElementos(f,squares,doors,lec, escala);
-		} else if (j==1){
+		state = true;
 
-			elems = m.menu1(s, lec, j);
-			col =obtenerColumna(elems,0);
-			iniciarElementos(elems,squares,doors,lec, escala);
-		} else {
+		Thread t = new Thread(() -> {
+			while (state){
+				try {
 
-			elems = m.menu2(s, lec, j);
+					Thread.sleep(1000);
+					seg++;
 
-			//ArrayList<Coordenadas> elemsAux = new ArrayList<>();
-			/*for(ArrayList<Integer> node:elemsI) {
-				for(Integer node1:node) {
-					if(node1 == -1) {
-						elemsAux.add(new Coordenadas(-1,-1));
-					} else {
-						elemsAux.add(new Coordenadas(node1%Integer.parseInt(lec.getDimensiones()[0]),node1/Integer.parseInt(lec.getDimensiones()[0])));
+					if(seg==60) {
+						seg=0;
+						++min;
+					}
+					if(min==60) {
+						min=0;
+						++hor;
+					}
+					if(state) {
+						String tiempo = (hor <= 9 ? "0" : "") + hor + " : " + (min <= 9 ? "0" : "") + min + " : " + (seg <= 9 ? "0" : "") + seg;
+						lblTimeCalc.setText(tiempo);
+					}
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		Thread t1 = new Thread(() -> {
+			for (;;) {
+
+				if (state1) {
+
+						++seg1;
+						if(seg1==60) {
+							seg1=0;
+							++min1;
+						}
+						if(min1==60) {
+							min1=0;
+							++hor1;
+						}
+						String tiempo = (hor1 <= 9 ? "0" : "") + hor1 + " : " + (min1 <= 9 ? "0" : "") + min1 + " : " +(seg1 <= 9 ? "0" :"") + seg1;
+						lblTimeEvac.setText(tiempo);
+
+
+				}
+
+			try {
+
+				Thread.sleep(1000/velocidad);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			}
+		});
+
+		Thread tParada = new Thread(() -> {
+			while(stateParada) {
+				try {
+					if ((((Blackboard) blackboard).isEmpty())) {
+						stateParada = false;
+						//motorState = false;
+						state1 = false;
+						pararButton.setEnabled(false);
+						reiniciarButton.setEnabled(true);
+						finSim = true;
+						genEdificioButton.setEnabled(false);
+						genPersButton.setEnabled(false);
+						acelerarButton.setEnabled(false);
+					}
+				} catch (ConcurrentModificationException e) {
+
+				}
+			}
+		});
+
+		tCalc = new Thread(() -> {
+			long milCalc=1000;
+			while(stateCalc){
+
+				if(stateCalc){
+					lblCalculando.setText("                                    CALCULANDO   ");
+					try {
+						Thread.sleep(milCalc);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
-				elems.add(elemsAux);
-				elemsAux = new ArrayList<>();
-			}*/
-			col =obtenerColumna(elems,0);
-			iniciarElementos(elems,squares,doors,lec, escala);
-		}
-		//t.stop();
-		//t = new Timer(100,accionesEvac);
-		//t= new Timer(100,acciones);
-		//t.stop();
-		motor = new MotorGrafico(pizarra);
-		//tEvac.start();
+
+				if(stateCalc){
+					lblCalculando.setText("                                    CALCULANDO.  ");
+					try {
+						Thread.sleep(milCalc);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+				if(stateCalc) {
+					lblCalculando.setText("                                    CALCULANDO.. ");
+					try {
+						Thread.sleep(milCalc);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+				if(stateCalc) {
+					lblCalculando.setText("                                    CALCULANDO...");
+					try {
+						Thread.sleep(milCalc);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+
+		motor = new MotorGrafico((Blackboard)blackboard);
+		motorGrafic = new Thread(() -> {
+			while (!finSim) {
+
+				if (motorState) {
+					motor.ejecutar();
+
+				}
+				try {
+					motorGrafic.sleep(interval
+							/velocidad);
+				}  catch (InterruptedException e) {}
+			/* else if (numStart%2==1){
+					motor.stop();
+					numStart++;
+				}*/
+				/*try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}*/
+			}
+		});
+
+		etiquetaPers = new Thread(() -> {
+			while (!finSim) {
+
+				if (motorState && !finSim) {
+					int numPers = (((Blackboard) blackboard).personasRestantes());
+					lblPersRest.setText("Personas restantes en el edificio: " + numPers);
+					lblPersEvac.setText("Personas evacuadas: " + (pos.getPosiciones().size() - numPers));
+				}
+
+				try {
+					etiquetaPers.sleep(interval
+							/ velocidad);
+				} catch (InterruptedException e) {
+				}
+			}
+		});
+
 		t.start();
-		motor.start();
-		if(pizarra.isEmpty())
-			t.stop();
+		alg = new Thread(() -> {
+			if (j==3) {
+				if(s[1].equals("Vacio"))
+					f = m.menuF(s,lec,j, pos);
+				else
+					f = m.menuF(s,lec,j);
+				col = obtenerColumna(f.getEstado(),0);
+				((Blackboard)blackboard).borrarPuntos();
+				iniciarElementos(f,squares,doors);
+			} else if (j==1){
+				if(s[1].equals("Vacio"))
+					elems = m.menu1(s,lec,j, pos);
+				else
+					elems = m.menu1(s, lec, j);
+				col =obtenerColumna(elems,0);
+				((Blackboard)blackboard).borrarPuntos();
+				iniciarElementos(elems);
+			} else {
+				if(s[1].equals("Vacio"))
+					elems = m.menu2(s,lec,j, pos);
+				else
+					elems = m.menu2(s, lec, j);
+
+				//ArrayList<Coordenadas> elemsAux = new ArrayList<>();
+				/*for(ArrayList<Integer> node:elemsI) {
+					for(Integer node1:node) {
+						if(node1 == -1) {
+							elemsAux.add(new Coordenadas(-1,-1));
+						} else {
+							elemsAux.add(new Coordenadas(node1%Integer.parseInt(lec.getDimensiones()[0]),node1/Integer.parseInt(lec.getDimensiones()[0])));
+						}
+					}
+					elems.add(elemsAux);
+					elemsAux = new ArrayList<>();
+				}*/
+				col =obtenerColumna(elems,0);
+				((Blackboard)blackboard).borrarPuntos();
+				iniciarElementos(elems);
+
+			}
+			stateCalc = false;
+			motorState = true;
+			state = false;
+			state1 = true;
+			motorGrafic.start();
+			etiquetaPers.start();
+			t1.start();
+			tParada.start();
+			acelerarButton.setEnabled(true);
+			pararButton.setEnabled(true);
+			cancelarButton.setEnabled(false);
+			lblCalculando.setText("");
+		});
+		alg.start();
+
 	}
 
-	private void iniciarElementos(Fuego f, ArrayList<Integer> squares, ArrayList<Integer> doors, FicheroEdificio lec, double escala) {
+	private void iniciarElementos(Fuego f, ArrayList<Integer> squares, ArrayList<Integer> doors) {
 		int cont = 0;
 		ArrayList<Coordenadas> col = f.getEstado().get(0);
 		for(Coordenadas node:col) {
-			pizarra.addElement((new Point2DAnimable((int) (node.getCoord_x()*tam.getDimX()),
-					(int) (node.getCoord_Y()*tam.getDimY()),obtenerColumna(f.getEstado(),cont),
-					(int) (tam.getDimX()),(int) (tam.getDimY()))));
+			((Blackboard)blackboard).addElement((new Point2DAnimable((node.getCoord_x()*tam.getDimX()),
+					(node.getCoord_Y()*tam.getDimY()),obtenerColumna(f.getEstado(),cont),
+					(tam.getDimX()),(tam.getDimY()), (Blackboard) blackboard)));
 			cont++;
 		}
 		for(Integer node1:squares) {
-			pizarra.addElement((new Square2D((int) ((node1%tam.getX())*tam.getDimX()),
-					(int) ((node1/tam.getX())*tam.getDimY()),
-					(int) (tam.getDimX()),(int) (tam.getDimY()))));
+			((Blackboard)blackboard).addElement((new Square2D(((node1%tam.getX())*tam.getDimX()),
+					((node1/tam.getX())*tam.getDimY()),
+					(tam.getDimX()), (tam.getDimY()))));
 		}
 		for(Integer node2:doors) {
-			pizarra.addElement((new Door2D((int) ((node2%tam.getX())*tam.getDimX()),
-					(int) ((node2/tam.getX())*tam.getDimY()),
-					(int) (tam.getDimX()),(int) (tam.getDimY()))));
+			((Blackboard)blackboard).addElement((new Door2D(((node2%tam.getX())*tam.getDimX()),
+					((node2/tam.getX())*tam.getDimY()),
+					(tam.getDimX()), (tam.getDimY()))));
 		}
-		pizarra.addElement(new Fire2DAnimable((int) (f.getFuego().get(0).get(0).getCoord_x()*tam.getDimX()),
-				(int) (f.getFuego().get(0).get(0).getCoord_Y()*tam.getDimY()),
-				f.getFuego(),(int) (tam.getDimX()),(int) (tam.getDimY())));
+		((Blackboard)blackboard).addElement(new Fire2DAnimable((f.getFuego().get(0).get(0).getCoord_x()*tam.getDimX()),
+				(f.getFuego().get(0).get(0).getCoord_Y()*tam.getDimY()),
+				f.getFuego(),(tam.getDimX()),(tam.getDimY())));
 
 	}
 
-	private void iniciarElementos(List<ArrayList<Coordenadas>> elems, ArrayList<Integer> squares,
-								  ArrayList<Integer> doors, FicheroEdificio lec, double escala) {
+	private void iniciarElementos(List<ArrayList<Coordenadas>> elems){
 		int cont = 0;
 		ArrayList<Coordenadas> col = obtenerColumna(elems,0);
 		for(Coordenadas node:col) {
-			pizarra.addElement((new Point2DAnimable((int) (node.getCoord_x()*tam.getDimX()),
-					(int) (node.getCoord_Y()*tam.getDimY()), elems.get(cont),
-					(int) (tam.getDimX()),(int) (tam.getDimY()))));
+			((Blackboard)blackboard).addElement((new Point2DAnimable((node.getCoord_x()*tam.getDimX()),
+					(node.getCoord_Y()*tam.getDimY()), elems.get(cont),
+					(tam.getDimX()),(tam.getDimY()), (Blackboard) blackboard)));
 			cont++;
 		}
-		for(Integer node1:squares) {
-			pizarra.addElement((new Square2D((int) ((node1%Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimX()),
-					(int) ((node1/Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimY()),
-					(int) (tam.getDimX()),(int) (tam.getDimY()))));
-		}
-		for(Integer node2:doors) {
-			pizarra.addElement((new Door2D((int) ((node2%Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimX()),
-					(int) ((node2/Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimY()),
-					(int) (tam.getDimX()),(int) (tam.getDimY()))));
-		}
+
 	}
 
 
 	public static ArrayList<Coordenadas> obtenerColumna(List<ArrayList<Coordenadas>> matriz, int col) {
-    	ArrayList<Coordenadas> values = new ArrayList<>();
-    	for(int i=0; i<matriz.size(); i++)
-    		if(matriz.get(i).size()>col)
-    			values.add(matriz.get(i).get(col));
-    		else
-    			values.add(new Coordenadas(-1,-1));
+		ArrayList<Coordenadas> values = new ArrayList<>();
+		for (ArrayList<Coordenadas> coordenadas : matriz)
+			if (coordenadas.size() > col)
+				values.add(coordenadas.get(col));
+			else
+				values.add(new Coordenadas(-1, -1));
 		return values;
-    }
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		Dimension ss = Toolkit.getDefaultToolkit ().getScreenSize ();
-		double escala = ss.width/1920d;
+	}
 
-		Dimension frameSize = new Dimension ( 500, 300 );
-		Timer t = new Timer(100,acciones);
-		frame = new JFrame ();
-		frame.setBounds ( ss.width / 2 - frameSize.width / 2,
-				ss.height / 2 - frameSize.height / 2,
-				frameSize.width, frameSize.height );
-		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		JButton btnSeleccionar = new JButton("Seleccionar...");
-		btnSeleccionar.setBounds((int) (1790*escala),(int) (101*escala),(int) (145*escala),(int) (24*escala));
-		frame.getContentPane().add(btnSeleccionar);
+	public Simulador() {
 
-		JLabel lblFicheroEdificio = new JLabel("Fichero Edificio:");
-		lblFicheroEdificio.setBounds((int) (1554*escala),(int) (55*escala),(int) (141*escala),(int) (20*escala));
-		frame.getContentPane().add(lblFicheroEdificio);
+		//comboBox1 = new JComboBox();
+		comboBox1.addItem("Algoritmo 1");
+		comboBox1.addItem("Algoritmo 2");
+		comboBox1.addItem("Algoritmo 3");
+		genPersButton.setEnabled(false);
+		genEdificioButton.setEnabled(false);
+		cancelarButton.setEnabled(false);
+		acelerarButton.setEnabled(false);
+		iniciarButton.setEnabled(false);
+		pararButton.setEnabled(false);
+		reiniciarButton.setEnabled(false);
+		slider.setEnabled(false);
+		seleccionarButton1.setEnabled(false);
+		exportarButton.setEnabled(false);
+		//Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+		//double escala = ss.width / 1920d;
 
-		textField = new JTextField();
-		textField.setBounds((int) (1557*escala),(int) (101*escala),(int) (233*escala),(int) (23*escala));
-		frame.getContentPane().add(textField);
-		textField.setColumns((int) (10*escala));
+		//slider = new JSlider();
+		slider.setValue(5);
+		porcentajeOcupacion = Integer.toString(slider.getValue());
 
-		JLabel label = new JLabel("Fichero Personas:");
-		label.setBounds((int) (1554*escala),(int) (158*escala),(int) (141*escala),(int) (20*escala));
-		frame.getContentPane().add(label);
+		//int blackboardHeight = blackboard.getX();
+		//int blackboardWidth = blackboard.getY();
 
-		textField_1 = new JTextField();
-		textField_1.setColumns((int) (10*escala));
-		textField_1.setBounds((int) (1557*escala),(int) (202*escala),(int) (233*escala),(int) (23*escala));
-		frame.getContentPane().add(textField_1);
+		frame.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				resize();
+			}
+		});
 
-		JButton button = new JButton("Seleccionar...");
-		button.setBounds((int) (1790*escala),(int) (201*escala),(int) (145*escala),(int) (24*escala));
-		frame.getContentPane().add(button);
+		iniciarButton.addActionListener(e -> {
+			//iniciar simulador
+			seleccionarButton.setEnabled(false);
+			reiniciarButton.setEnabled(false);
+			genEdificioButton.setEnabled(false);
+			genPersButton.setEnabled(false);
+			comboBox1.setEnabled(false);
+			seleccionarButton1.setEnabled(false);
+			slider.setEnabled(false);
+			iniciarButton.setEnabled(false);
+			//btnParar.setEnabled(true);
+			exportarButton.setEnabled(true);
 
-		JLabel lblAlgoritmo = new JLabel("Algoritmo:");
-		lblAlgoritmo.setBounds((int) (1557*escala),(int) (250*escala),(int) (95*escala),(int) (20*escala));
-		frame.getContentPane().add(lblAlgoritmo);
+			if(motor==null) {
+				iniciar(txtFieldFicheroEdificio.getText(),txtFieldFicheroPersonas.getText(), comboBox1.getSelectedIndex()+1);
+				tCalc.start();
+				lblPersIni.setText("Personas al comienzo de la simulación: " + pos.getPosiciones().size());
+				lblPersRest.setText("Personas restantes en el edificio: " + pos.getPosiciones().size());
+				lblPersEvac.setText("Personas evacuadas: 0");
+				cancelarButton.setEnabled(true);
+				stateCalc = true;
+			} else {
+				state1 = true;
+				motorState = true;
+				pararButton.setEnabled(true);
+			}
+		});
 
-		Choice choice = new Choice();
-		choice.setBounds((int) (1681*escala),(int) (255*escala),(int) (252*escala),(int) (23*escala));
-		choice.add("Algoritmo 1");
-		choice.add("Algoritmo 2");
-		choice.add("Algoritmo 3");
-		frame.getContentPane().add(choice);
+		reiniciarButton.addActionListener(e -> {
+			iniciarButton.setText("Iniciar");
+			lblTimeCalc.setText("00 : 00 : 00");
+			lblTimeEvac.setText("00 : 00 : 00");
+			acelerarButton.setText("Acelerar");
+			lblPersIni.setText("Personas al comienzo de la simulación: ");
+			lblPersRest.setText("Personas restantes en el edificio: ");
+			lblPersEvac.setText("Personas evacuadas: ");
+			lblCalculando.setText("");
+			seleccionarButton.setEnabled(true);
+			seleccionarButton1.setEnabled(true);
+			comboBox1.setEnabled(true);
+			acelerarButton.setEnabled(false);
+			slider.setEnabled(false);
+			iniciarButton.setEnabled(false);
+			exportarButton.setEnabled(false);
+			pararButton.setEnabled(false);
+			//blackboard.setVisible(true);
+			((Blackboard)blackboard).removeAll();
+			//blackboard = new Blackboard();
+			blackboard.revalidate();
+			blackboard.repaint();
+			//frame.getContentPane().remove(panel);
+			comboBox1.removeAllItems();
+			comboBox1.addItem("Algoritmo 1");
+			comboBox1.addItem("Algoritmo 2");
+			comboBox1.addItem("Algoritmo 3");
+			txtFieldFicheroPersonas.setText("");
+			txtFieldFicheroEdificio.setText("");
+			motor = null;
+			m = null;
+			contPers=0;
+			col = new ArrayList<>();
+			state = false;
+			state1 = false;
+			motorState = false;
+			stateCalc=false;
+			finSim = false;
+			numStart=0;
+			velocidad=1;
+			ds = 0; ds1 = 0;
+			seg = 0; seg1 = 0;
+			min = 0; min1 = 0;
+			hor = 0; hor1 = 0;
+			slider.setValue(5);
+			porcentajeOcupacion = "5";
+			//Timer t = new Timer(100, acciones);
+			//tEvac = new Timer(100,accionesEvac);
+			lec = new FicheroEdificio();
+			reiniciarButton.setEnabled(false);
+		});
 
-		JSlider slider = new JSlider();
-		slider.setBounds((int) (1546*escala),(int) (833*escala),(int) (224*escala),(int) (13*escala));
-		frame.getContentPane().add(slider);
-		porcentajeDeEvacuacion = Integer.toString(slider.getValue());
+		pararButton.addActionListener(e -> {
+			iniciarButton.setText("Reanudar");
+			state = false;
+			state1 = false;
+			//t.stop();
+			iniciarButton.setEnabled(true);
+			pararButton.setEnabled(false);
+			reiniciarButton.setEnabled(true);
+			motorState = false;
+		});
 
-
-		JButton btnIniciar = new JButton("Iniciar");
-		btnIniciar.setBounds((int) (1546*escala),(int) (868*escala),(int) (359*escala),(int) (24*escala));
-		frame.getContentPane().add(btnIniciar);
-
-		JButton btnReiniciar = new JButton("Reiniciar");
-		btnReiniciar.setBounds((int) (1545*escala),(int) (921*escala),(int) (359*escala),(int) (24*escala));
-		frame.getContentPane().add(btnReiniciar);
-
-
-		JButton btnParar = new JButton("Parar");
-		btnParar.setBounds((int) (1546*escala),(int) (895*escala),(int) (359*escala),(int) (24*escala));
-		frame.getContentPane().add(btnParar);
-
-		JLabel etiquetaTiempo = new JLabel("00 : 00: 00 : 0");
-		etiquetaTiempo.setFont(new Font("Tahoma", Font.PLAIN, (int) (24*escala)));
-		etiquetaTiempo.setBounds((int) (241*escala),(int) (17*escala),(int) (177*escala),(int) (20*escala));
-		frame.getContentPane().add(etiquetaTiempo);
-
-
-		JLabel lblTiempoClculoDe = new JLabel("Tiempo de evacuaci\u00F3n:");
-		lblTiempoClculoDe.setBounds((int) (21*escala),(int) (17*escala),(int) (200*escala),(int) (20*escala));
-		frame.getContentPane().add(lblTiempoClculoDe);
-
-		/*JLabel label_2 = new JLabel("Tiempo c\u00E1lculo de ruta");
-		label_2.setBounds((int) (512*escala),(int) (15*escala),(int) (200*escala),(int) (20*escala));
-		frame.getContentPane().add(label_2);*/
-
-		/*JLabel tiempoCalculo = new JLabel("00 : 00: 00 : 0");
-		tiempoCalculo.setFont(new Font("Tahoma", Font.PLAIN, (int) (24*escala)));
-		tiempoCalculo.setBounds((int) (716*escala),(int) (17*escala),(int) (195*escala),(int) (20*escala));
-		frame.getContentPane().add(tiempoCalculo);*/
-
-		JLabel lblPorcentajeDeOcupacin = new JLabel("Porcentaje de ocupaci\u00F3n: 50%");
-		lblPorcentajeDeOcupacin.setBounds((int) (1545*escala),(int) (797*escala),(int) (290*escala),
-				(int) (20*escala));
-		frame.getContentPane().add(lblPorcentajeDeOcupacin);
-
-
-		JButton btnExportar = new JButton("Exportar");
-		btnExportar.setBounds((int) (1786*escala),(int) (828*escala),(int) (99*escala),(int) (24*escala));
-		frame.getContentPane().add(btnExportar);
-		btnExportar.setEnabled(false);
-		btnParar.setEnabled(false);
-		btnReiniciar.setEnabled(false);
-
-		btnIniciar.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				//iniciar simulador
-				btnSeleccionar.setEnabled(false);
-				choice.setEnabled(false);
-				button.setEnabled(false);
+		seleccionarButton1.addActionListener(e -> {
+			ficheroPersonas = seleccionarFichero();
+			if (!ficheroPersonas.equals("")){
 				slider.setEnabled(false);
-				btnIniciar.setEnabled(false);
-				btnParar.setEnabled(true);
-				btnExportar.setEnabled(true);
-				if(motor==null) {
-					try {
-						iniciar(textField.getText(),textField_1.getText(), choice.getSelectedIndex()+1,t, escala);
-					} catch (InterruptedException ex) {
-						ex.printStackTrace();
-					}
-					pizarra.setBounds((int) (0*escala), (int) (49*escala), (int) (tam.getX()*10*escala),
-							(int) (tam.getY()*10*escala));
-					pizarra.setBackground(Color.WHITE);
-					frame.getContentPane().add(pizarra);
-				} else {
-					motor.pausar();
+			}
+			txtFieldFicheroPersonas.setText(ficheroPersonas);});
+
+
+		seleccionarButton.addActionListener(e -> {
+
+			ficheroEdificio = seleccionarFichero();
+			genEdificioButton.setEnabled(true);
+			txtFieldFicheroEdificio.setText(ficheroEdificio);
+
+		});
+
+		slider.addChangeListener(ce -> {
+			lblporcentajeOcupacion.setText("Porcentaje de ocupaci\u00F3n: " + slider.getValue() + "%");
+			porcentajeOcupacion = Integer.toString(slider.getValue());
+		});
+
+		exportarButton.addActionListener(e -> {
+			//iniciar simulador
+			String ruta = guardarFichero();
+			StringBuilder cadenaE = new StringBuilder();
+			FileWriter fichero = null;
+			PrintWriter pw;
+			try
+			{
+				fichero = new FileWriter(ruta);
+				pw = new PrintWriter(fichero);
+				pw.println(col.size() + "\n");
+				for(Coordenadas node0:col) {
+					cadenaE.append("(").append(node0.getCoord_x()).append(".").append(node0.getCoord_Y()).append("),");
 				}
-			}
+				pw.print(cadenaE.substring(0, cadenaE.length()-1));
+
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} finally {
+				try {
+					// Nuevamente aprovechamos el finally para
+					// asegurarnos que se cierra el fichero.
+					if (null != fichero)
+						fichero.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}}
 		});
 
-		btnReiniciar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				btnIniciar.setText("Iniciar");
-				etiquetaTiempo.setText("00 : 00 : 00 : 0");
-				btnReiniciar.setEnabled(false);
-				btnSeleccionar.setEnabled(true);
-				button.setEnabled(true);
-				choice.setEnabled(true);
+		genEdificioButton.addActionListener(e -> {
+
+			if (!ficheroEdificio.equals("")){
+				ArrayList<Integer>squares = new ArrayList<>();
+				ArrayList<Integer>doors = new ArrayList<>();
+
+				if(((Blackboard)blackboard).getBd().size()>0) {
+					((Blackboard)blackboard).removeAll();
+					iniciarButton.setEnabled(false);
+				}
+
+				lec = new FicheroEdificio(ficheroEdificio);
+				tam = new Size(Integer.parseInt(lec.getDimensiones()[0]),Integer.parseInt(lec.getDimensiones()[1]),
+						blackboard.getWidth(), blackboard.getHeight());
+
+				tam.calcDims();
+				for(int i = 0;i<lec.getBaldosas().size();i++) {
+					if(lec.getBaldosas().get(i).getPos()==0)
+						squares.add(i);
+					if(lec.getBaldosas().get(i).getPos()==2)
+						doors.add(i);
+				}
+
+				//btnIniciar.setEnabled(true);
+				for(Integer node1:squares) {
+					((Blackboard)blackboard).addElement((new Square2D(((node1%Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimX()),
+							((node1/Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimY()),
+							(tam.getDimX()),(tam.getDimY()))));
+				}
+				for(Integer node2:doors) {
+					((Blackboard)blackboard).addElement((new Door2D(((node2%Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimX()),
+							((node2/Integer.parseInt(lec.getDimensiones()[0]))*tam.getDimY()),
+							(tam.getDimX()),(tam.getDimY()))));
+				}
+				//((Blackboard)blackboard).setBounds(blackboard.getX(), blackboard.getY(), blackboard.getWidth(), blackboard.getHeight());
+				((Blackboard)blackboard).setBackground(Color.WHITE);
+				//frame.add(panel);
+
+				((Blackboard)blackboard).repaint();
+				genPersButton.setEnabled(true);
+				seleccionarButton1.setEnabled(true);
 				slider.setEnabled(true);
-				btnExportar.setEnabled(false);
-				pizarra.setVisible(false);
-				pizarra.removeAll();
-				pizarra.revalidate();
-				pizarra.repaint();
-				frame.getContentPane().remove(pizarra);
-				choice.removeAll();
-				choice.add("Algoritmo 1");
-				choice.add("Algoritmo 2");
-				choice.add("Algoritmo 3");
-				textField.setText("");
-				textField_1.setText("");
-				pizarra = new Blackboard();
-				motor = null;
-				m = null;
-				col = new ArrayList<>();
-				ds = 0; ds1 = 0;
-				seg = 0; seg1 = 0;
-				min = 0; min1 = 0;
-				hor = 0; hor1 = 0;
-				slider.setValue(50);
-				porcentajeDeEvacuacion = "50";
-				Timer t = new Timer(100, acciones);
-				//tEvac = new Timer(100,accionesEvac);
-				lec = new FicheroEdificio();
+			}
+
+		});
+
+		genPersButton.addActionListener(e -> {
+
+			if(contPers>0)
+				((Blackboard)blackboard).borrarPuntos();
+
+			if (!slider.isEnabled())
+				pos = new FicheroPosiciones(ficheroPersonas, lec.getDimensiones());
+			else
+				pos = new FicheroPosiciones(porcentajeOcupacion, lec);
+
+			ArrayList<Coordenadas> col = pos.getPosiciones();
+			for (Coordenadas node : col) {
+				((Blackboard)blackboard).addElement((new Point2DAnimable((node.getCoord_x() * tam.getDimX()),
+						(node.getCoord_Y() * tam.getDimY()),
+						(tam.getDimX()), (tam.getDimY()))));
+			}
+			iniciarButton.setEnabled(true);
+			lblPersIni.setText("Personas al comienzo de la simulación: "
+					+ pos.getPosiciones().size());
+			contPers++;
+			((Blackboard)blackboard).anima();
+			blackboard.repaint();
+		});
+
+		cancelarButton.addActionListener(e -> {
+			alg.stop();
+			iniciarButton.setText("Iniciar");
+			lblTimeEvac.setText("00 : 00 : 00");
+			acelerarButton.setText("Acelerar");
+			lblPersIni.setText("Personas al comienzo de la simulación: ");
+			lblPersRest.setText("Personas restantes en el edificio: ");
+			lblPersEvac.setText("Personas evacuadas: ");
+			reiniciarButton.setEnabled(false);
+			seleccionarButton.setEnabled(true);
+			pararButton.setEnabled(false);
+			cancelarButton.setEnabled(false);
+			seleccionarButton1.setEnabled(true);
+			acelerarButton.setEnabled(false);
+			comboBox1.setEnabled(true);
+			state = false;
+			slider.setEnabled(true);
+			slider.setEnabled(true);
+			iniciarButton.setEnabled(false);
+			exportarButton.setEnabled(false);
+			comboBox1.removeAll();
+			comboBox1.addItem("Algoritmo 1");
+			comboBox1.addItem("Algoritmo 2");
+			comboBox1.addItem("Algoritmo 3");
+			txtFieldFicheroEdificio.setText("");
+			txtFieldFicheroPersonas.setText("");
+			//panel = new Blackboard();
+			motor = null;
+			m = null;
+			contPers=0;
+			//col = new ArrayList<>();
+			state1 = false;
+			motorState = false;
+			stateCalc=false;
+			finSim = false;
+			numStart=0;
+			velocidad=1;
+			ds = 0; ds1 = 0;
+			seg = 0; seg1 = 0;
+			min = 0; min1 = 0;
+			hor = 0; hor1 = 0;
+			slider.setValue(5);
+			porcentajeOcupacion = "5";
+			//for(int i = 0;i<1000000;i++){continue;}
+			lblTimeCalc.setText("00 : 00 : 00");
+			lblCalculando.setText("");
+			//blackboard.setVisible(true);
+			blackboard.removeAll();
+			blackboard.revalidate();
+			blackboard.repaint();
+			//((JFrame)frame).getContentPane().remove(blackboard);
+
+			lec = new FicheroEdificio();
+		});
+
+		acelerarButton.addActionListener(e -> {
+			if(velocidad==8) {
+				velocidad = 1;
+				acelerarButton.setText("Acelerar");
+			} else {
+				velocidad*=2;
+				acelerarButton.setText("Acelerar x" + velocidad);
 			}
 		});
 
-		btnParar.addActionListener(new ActionListener() {
-
-			  public void actionPerformed(ActionEvent e) {
-			    //iniciar simulador
-				  btnIniciar.setText("Reanudar");
-				  t.stop();
-				  btnIniciar.setEnabled(true);
-				  btnParar.setEnabled(false);
-				  btnReiniciar.setEnabled(true);
-				  motor.pausar();
-			  }
-			});
-
-		button.addActionListener(new ActionListener() {
-
-			  public void actionPerformed(ActionEvent e) {
-				  ficheroPersonas = seleccionarFichero();
-				  textField_1.setText(ficheroPersonas);}
-			});
-
-
-		btnSeleccionar.addActionListener(new ActionListener() {
-
-			  public void actionPerformed(ActionEvent e) {
-				  ficheroEdificio = seleccionarFichero();
-				  textField.setText(ficheroEdificio);
-				  }
-			});
-		slider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent ce) {
-				lblPorcentajeDeOcupacin.setText("Porcentaje de ocupaci\u00F3n: " + slider.getValue() + "%");
-				porcentajeDeEvacuacion = Integer.toString(slider.getValue());
-			}
-		});
-
-		btnExportar.addActionListener(new ActionListener() {
-
-			  public void actionPerformed(ActionEvent e) {
-			    //iniciar simulador
-				  String ruta = guardarFichero();
-				  String cadenaE = "";
-				  FileWriter fichero = null;
-			        PrintWriter pw = null;
-			        try
-			        {
-			            fichero = new FileWriter(ruta);
-			            pw = new PrintWriter(fichero);
-			            pw.println(col.size() + "\n");
-			          for(Coordenadas node0:col) {
-			        	 cadenaE = cadenaE + "(" + node0.getCoord_x() + "." + node0.getCoord_Y() + "),";
-			          }
-			          pw.print(cadenaE.substring(0, cadenaE.length()-1));
-
-			        } catch (IOException e1) {
-			            e1.printStackTrace();
-			        } finally {
-			           try {
-			           // Nuevamente aprovechamos el finally para
-			           // asegurarnos que se cierra el fichero.
-			           if (null != fichero)
-			              fichero.close();
-			           } catch (Exception e2) {
-			              e2.printStackTrace();
-			           }}
-			  }
-			});
-
 
 	}
-
-
-	protected void restaurarVentana() {
-		dispose();
-		new Simulador();
-	}
-
 
 	private static String guardarFichero() {
 		JFileChooser jF1= new JFileChooser();
 		String ruta = "";
 		try{
-		if(jF1.showSaveDialog(null)==jF1.APPROVE_OPTION){
-		ruta = jF1.getSelectedFile().getAbsolutePath();
-		//Aqui ya tiens la ruta,,,ahora puedes crear un fichero n esa ruta y escribir lo k kieras...
-		}
+			if(jF1.showSaveDialog(null)== JFileChooser.APPROVE_OPTION){
+				ruta = jF1.getSelectedFile().getAbsolutePath();
+				//Aqui ya tiens la ruta,,,ahora puedes crear un fichero n esa ruta y escribir lo k kieras...
+			}
 		}catch (Exception ex){
-		ex.printStackTrace();
+			ex.printStackTrace();
 		}
 		return ruta;
 	}
 
 	private static String seleccionarFichero() {
-		Scanner entrada = null;
-        //Se crea el JFileChooser. Se le indica que la ventana se abra en el directorio actual
-        JFileChooser fileChooser = new JFileChooser(".");
-        //Se crea el filtro. El primer par�metro es el mensaje que se muestra,
-        //el segundo es la extensi�n de los ficheros que se van a mostrar
-        FileFilter filtro = new FileNameExtensionFilter("Archivos txt (.txt)", "txt");
-        //Se le asigna al JFileChooser el filtro
-        fileChooser.setFileFilter(filtro);
-        //se muestra la ventana
-        String ruta = "";
-        int valor = fileChooser.showOpenDialog(fileChooser);
-        if (valor == JFileChooser.APPROVE_OPTION) {
-            ruta = fileChooser.getSelectedFile().getAbsolutePath();
-        } else {
-            System.out.println("No se ha seleccionado ningun fichero");
-        }
+		//Se crea el JFileChooser. Se le indica que la ventana se abra en el directorio actual
+		JFileChooser fileChooser = new JFileChooser(".");
+		//Se crea el filtro. El primer par�metro es el mensaje que se muestra,
+		//el segundo es la extensi�n de los ficheros que se van a mostrar
+		FileFilter filtro = new FileNameExtensionFilter("Archivos txt (.txt)", "txt");
+		//Se le asigna al JFileChooser el filtro
+		fileChooser.setFileFilter(filtro);
+		//se muestra la ventana
+		String ruta = "";
+		int valor = fileChooser.showOpenDialog(fileChooser);
+		if (valor == JFileChooser.APPROVE_OPTION) {
+			ruta = fileChooser.getSelectedFile().getAbsolutePath();
+		} else {
+			System.out.println("No se ha seleccionado ningun fichero");
+		}
 		return ruta;
 	}
-}
+	public void setData(Simulador data) {
+	}
 
+	public void getData(Simulador data) {
+	}
+
+	public boolean isModified(Simulador data) {
+		return false;
+	}
+
+	private void createUIComponents() {
+		// TODO: place custom component creation code here
+
+		blackboard = new Blackboard();
+	}
+}
