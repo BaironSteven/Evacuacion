@@ -1,10 +1,9 @@
 package material;
 
+import algoritmos.Nodo;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import Algoritmos.Nodo;
 
 public class ListaNodosOrdenados {
         //Lista de nodos.

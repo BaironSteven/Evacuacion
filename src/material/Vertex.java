@@ -1,14 +1,13 @@
 package material;
 
-import java.util.ArrayList;
+import algoritmos.Nodo;
 
-import Algoritmos.Nodo;
-import Auxiliar.Coordenadas;
+import java.util.ArrayList;
 
 
 /**
  *
- * @author jvelez
+ * @author bairon
  */
 public interface Vertex <V> extends Position <V>, Runnable,Comparable<Vertex<V>>{
 

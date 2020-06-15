@@ -1,6 +1,6 @@
 package graph;
 
-import Auxiliar.Coordenadas;
+import auxiliar.Coordenadas;
 import material.Animable;
 
 import java.awt.*;

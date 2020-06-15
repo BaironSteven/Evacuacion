@@ -1,8 +1,8 @@
-package Algoritmos;
+package algoritmos;
 
-import Auxiliar.Coordenadas;
-import Heuristica.DistanciaLineaRecta;
-import Heuristica.InterfazHeuristica;
+import auxiliar.Coordenadas;
+import heuristica.DistanciaLineaRecta;
+import heuristica.InterfazHeuristica;
 import graph.ELGraph;
 import material.Graph;
 import material.ListaNodosOrdenados;

@@ -1,4 +1,4 @@
-package Heuristica;
+package heuristica;
 
 /**
  * A heuristic that uses the tile that is closest to the target

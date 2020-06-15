@@ -5,9 +5,8 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-import Auxiliar.Coordenadas;
+import auxiliar.Coordenadas;
 import material.Animable;
-import material.SimpleDrawable;
 
 public class Fire2DAnimable extends Fire2D implements Animable{
 	private List<ArrayList<Coordenadas>> movimientos = new ArrayList<>();

@@ -3,13 +3,6 @@ package material;
 import java.util.Collection;
 import java.util.List;
 
-import Algoritmos.Nodo;
-
-
-/**
- *
- * @author jvelez
- */
 public interface Graph <V,E> {
     /**
      * @return all vertices of the graph.

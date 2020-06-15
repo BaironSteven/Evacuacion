@@ -1,4 +1,4 @@
-package Heuristica;
+package heuristica;
 
 public interface InterfazHeuristica {
 

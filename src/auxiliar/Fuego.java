@@ -1,4 +1,4 @@
-package Auxiliar;
+package auxiliar;
 
 import java.util.ArrayList;
 import java.util.List;

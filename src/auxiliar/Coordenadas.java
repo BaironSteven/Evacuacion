@@ -1,4 +1,4 @@
-package Auxiliar;
+package auxiliar;
 
 public class Coordenadas {
 

@@ -1,8 +1,7 @@
-package Algoritmos;
+package algoritmos;
 
 import java.util.ArrayList;
 
-import Auxiliar.Coordenadas;
 import graph.ELGraph;
 
 public class Nodo implements Comparable<Nodo> {

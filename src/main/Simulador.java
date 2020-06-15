@@ -1,6 +1,6 @@
 package main;
 
-import Auxiliar.*;
+import auxiliar.*;
 import graph.*;
 
 import javax.swing.*;
@@ -49,7 +49,6 @@ public class Simulador{
 
 	protected String ficheroPersonas;
 	protected String ficheroEdificio;
-	//Blackboard blackboard = new Blackboard();
 	MotorGrafico motor = null;
 	Menu m;
 	ArrayList<Coordenadas> col = new ArrayList<>();

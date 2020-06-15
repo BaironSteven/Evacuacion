@@ -1,10 +1,10 @@
 package graph;
 
-import Algoritmos.Algoritmo_A_Estrella;
-import Algoritmos.Nodo;
-import Algoritmos.Recorrido;
-import Auxiliar.Coordenadas;
-import Auxiliar.FicheroEdificio;
+import algoritmos.Algoritmo_A_Estrella;
+import algoritmos.Nodo;
+import algoritmos.Recorrido;
+import auxiliar.Coordenadas;
+import auxiliar.FicheroEdificio;
 import material.Edge;
 import material.Graph;
 import material.Vertex;

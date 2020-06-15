@@ -1,6 +1,6 @@
 package graph;
 
-import Algoritmos.Nodo;
+import algoritmos.Nodo;
 
 public class Edificio{
 	
