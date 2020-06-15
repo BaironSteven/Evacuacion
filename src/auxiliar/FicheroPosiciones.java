@@ -5,6 +5,7 @@ import graph.Informacion;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public class FicheroPosiciones {
 
 	private static ArrayList<Coordenadas> posiciones;
 	
-	public FicheroPosiciones(String path, String [] dimensiones) {
+	public FicheroPosiciones(String path, String [] dimensiones) throws IOException {
 		posiciones = new ArrayList<>();
 		
 		File archivo = null;
@@ -30,46 +31,43 @@ public class FicheroPosiciones {
 		BufferedReader br = null;
 		String[] aux = null;
 
-		try {
-			// Apertura del fichero y creacion de BufferedReader para poder
-			// hacer una lectura comoda (disponer del metodo readLine()).
-			archivo = new File (path);
-			fr = new FileReader (archivo);
-			br = new BufferedReader(fr);
 
-			// Lectura del fichero
-			String linea;
-			int cont = 0;
-			while((linea=br.readLine())!=null) {
-				if(cont==0)
-					num = Integer.parseInt(linea);
-				else
-					if(cont>1) {
-						aux = linea.split(",");
-						for(String n:aux) {
-							n = n.replaceAll("\\(", "");
-							n = n.replaceAll("\\)", "");	
-							Coordenadas c = new Coordenadas(Integer.parseInt(n.substring(0, n.indexOf("."))),Integer.parseInt(n.substring(n.indexOf(".")+1,n.length())));
-							posiciones.add(c);
-						}
+		// Apertura del fichero y creacion de BufferedReader para poder
+		// hacer una lectura comoda (disponer del metodo readLine()).
+		archivo = new File (path);
+		fr = new FileReader (archivo);
+		br = new BufferedReader(fr);
+
+		// Lectura del fichero
+		String linea;
+		int cont = 0;
+		while((linea=br.readLine())!=null) {
+			if(cont==0)
+				num = Integer.parseInt(linea);
+			else
+				if(cont>1) {
+					aux = linea.split(",");
+					for(String n:aux) {
+						n = n.replaceAll("\\(", "");
+						n = n.replaceAll("\\)", "");
+						Coordenadas c = new Coordenadas(Integer.parseInt(n.substring(0, n.indexOf("."))),Integer.parseInt(n.substring(n.indexOf(".")+1,n.length())));
+						posiciones.add(c);
 					}
-				cont++;
-			}
+				}
+			cont++;
 		}
-		catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			// En el finally cerramos el fichero, para asegurarnos
-			// que se cierra tanto si todo va bien como si salta 
-			// una excepcion.
-			try{                    
-				if( null != fr ){   
-					fr.close();     
-	            }                  
-			}catch (Exception e2){ 
-				e2.printStackTrace();
-	        }
-	    }
+
+		// En el finally cerramos el fichero, para asegurarnos
+		// que se cierra tanto si todo va bien como si salta
+		// una excepcion.
+		try{
+			if( null != fr ){
+				fr.close();
+			}
+		}catch (Exception e2){ 
+			e2.printStackTrace();
+		}
+
 	}
 
 	public FicheroPosiciones(String string, FicheroEdificio lec) {
