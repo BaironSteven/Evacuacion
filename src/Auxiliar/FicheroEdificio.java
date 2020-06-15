@@ -1,11 +1,12 @@
 package Auxiliar;
 
+import graph.Informacion;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-
-import graph.Informacion;
 
 public class FicheroEdificio {
 	
@@ -20,14 +21,13 @@ public class FicheroEdificio {
 		FicheroEdificio.baldosas = baldosas;
 	}
 	
-	public FicheroEdificio(String arg) {
+	public FicheroEdificio(String arg) throws IOException {
 		baldosas = new ArrayList<>();
 		File archivo = null;
 		FileReader fr = null;
 		BufferedReader br = null;
 		String[] aux = null;
-		
-		try {
+
 			// Apertura del fichero y creacion de BufferedReader para poder
 			// hacer una lectura comoda (disponer del metodo readLine()).
 			archivo = new File (arg);
@@ -56,10 +56,7 @@ public class FicheroEdificio {
 					}
 				cont++;
 			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}finally{
+
 			// En el finally cerramos el fichero, para asegurarnos
 			// que se cierra tanto si todo va bien como si salta 
 			// una excepcion.
@@ -70,7 +67,7 @@ public class FicheroEdificio {
 			}catch (Exception e2){ 
 				e2.printStackTrace();
 	        }
-	    }
+
 	}
 
 	public FicheroEdificio() {

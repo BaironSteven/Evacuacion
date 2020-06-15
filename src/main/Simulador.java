@@ -82,6 +82,8 @@ public class Simulador{
 	private boolean stateCalc = true;
 	private static JFrame frame;
 	private Thread etiquetaPers;
+	private long sleepInicial = 1000;
+	Thread tParada;
 
 	public static void main(String[] args) {
 		frame = new JFrame("Simulador");
@@ -95,24 +97,29 @@ public class Simulador{
 
 	private void resize() {
 		if(lec!=null) {
+			Size tamAux = new Size(tam.getX(),tam.getY(),tam.getWidth(),tam.getHeight());
+			tamAux.calcDims();
 			tam = new Size(Integer.parseInt(lec.getDimensiones()[0]), Integer.parseInt(lec.getDimensiones()[1]),
 					blackboard.getWidth(), blackboard.getHeight());
 			tam.calcDims();
+			float x = ((float)tam.getDimX()) / tamAux.getDimX();
+			float y = ((float)tam.getDimY()) / tamAux.getDimY();
 			for (Object component: ((Blackboard)blackboard).getBd()) {
 				if (component instanceof Point2DAnimable) {
-					((Point2DAnimable) component).resize(((Point2DAnimable) component).getX() * tam.getDimX(),
-							(((Point2DAnimable) component).getY() * tam.getDimY()), (tam.getDimX()), (tam.getDimY()));
+					((Point2DAnimable) component).resize(Math.round(((Point2DAnimable) component).getX() * x),
+							Math.round(((Point2DAnimable) component).getY() * y), (tam.getDimX()), (tam.getDimY()));
 				} else if (component instanceof Square2D) {
-					((Square2D) component).resize((((Square2D)component).getX()*tam.getDimX()),
-							((((Square2D)component).getY())*tam.getDimY()),
+					((Square2D) component).resize(Math.round(((Square2D)component).getX()*x),
+							Math.round((((Square2D)component).getY())*y),
 							(tam.getDimX()), (tam.getDimY()));
 				} else if (component instanceof Door2D) {
-					((Door2D) component).resize((((Door2D)component).getX()*tam.getDimX()),
-							((((Door2D)component).getY())*tam.getDimY()),
+					((Door2D) component).resize(Math.round(((Door2D)component).getX()*x),
+							Math.round((((Door2D)component).getY())*y),
 							(tam.getDimX()), (tam.getDimY()));
 				}
 			}
-			((Blackboard)blackboard).repaint();
+			blackboard.revalidate();
+			blackboard.repaint();
 		}
 	}
 
@@ -171,8 +178,17 @@ public class Simulador{
 		});
 
 		Thread t1 = new Thread(() -> {
+			int cont = 0;
 			for (;;) {
 
+				if (cont==0) {
+					try {
+						motorGrafic.sleep(sleepInicial);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				cont++;
 				if (state1) {
 
 						++seg1;
@@ -200,8 +216,17 @@ public class Simulador{
 			}
 		});
 
-		Thread tParada = new Thread(() -> {
+		tParada = new Thread(() -> {
+			int cont = 0;
 			while(stateParada) {
+				if (cont==0) {
+					try {
+						motorGrafic.sleep(90);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				cont++;
 				try {
 					if ((((Blackboard) blackboard).isEmpty())) {
 						stateParada = false;
@@ -217,10 +242,18 @@ public class Simulador{
 				} catch (ConcurrentModificationException e) {
 
 				}
+				try {
+					tParada.sleep(interval	/velocidad);
+				}  catch (InterruptedException e) {}
 			}
 		});
 
 		tCalc = new Thread(() -> {
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			long milCalc=1000;
 			while(stateCalc){
 
@@ -264,8 +297,16 @@ public class Simulador{
 
 		motor = new MotorGrafico((Blackboard)blackboard);
 		motorGrafic = new Thread(() -> {
+			int cont = 0;
 			while (!finSim) {
-
+				if (cont==0) {
+					try {
+						motorGrafic.sleep(sleepInicial);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				cont++;
 				if (motorState) {
 					motor.ejecutar();
 
@@ -452,7 +493,7 @@ public class Simulador{
 			slider.setEnabled(false);
 			iniciarButton.setEnabled(false);
 			//btnParar.setEnabled(true);
-			exportarButton.setEnabled(true);
+			//exportarButton.setEnabled(true);
 
 			if(motor==null) {
 				iniciar(txtFieldFicheroEdificio.getText(),txtFieldFicheroPersonas.getText(), comboBox1.getSelectedIndex()+1);
@@ -507,6 +548,7 @@ public class Simulador{
 			motorState = false;
 			stateCalc=false;
 			finSim = false;
+			stateParada = true;
 			numStart=0;
 			velocidad=1;
 			ds = 0; ds1 = 0;
@@ -593,7 +635,14 @@ public class Simulador{
 					iniciarButton.setEnabled(false);
 				}
 
-				lec = new FicheroEdificio(ficheroEdificio);
+				try {
+					lec = new FicheroEdificio(ficheroEdificio);
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Fichero inválido");
+					txtFieldFicheroEdificio.setText("");
+					return;
+				}
+
 				tam = new Size(Integer.parseInt(lec.getDimensiones()[0]),Integer.parseInt(lec.getDimensiones()[1]),
 						blackboard.getWidth(), blackboard.getHeight());
 
@@ -632,11 +681,16 @@ public class Simulador{
 
 			if(contPers>0)
 				((Blackboard)blackboard).borrarPuntos();
-
-			if (!slider.isEnabled())
-				pos = new FicheroPosiciones(ficheroPersonas, lec.getDimensiones());
-			else
-				pos = new FicheroPosiciones(porcentajeOcupacion, lec);
+			try {
+				if (!slider.isEnabled())
+					pos = new FicheroPosiciones(ficheroPersonas, lec.getDimensiones());
+				else
+					pos = new FicheroPosiciones(porcentajeOcupacion, lec);
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, "Fichero inválido");
+				txtFieldFicheroPersonas.setText("");
+				return;
+			}
 
 			ArrayList<Coordenadas> col = pos.getPosiciones();
 			for (Coordenadas node : col) {
@@ -645,6 +699,7 @@ public class Simulador{
 						(tam.getDimX()), (tam.getDimY()))));
 			}
 			iniciarButton.setEnabled(true);
+			exportarButton.setEnabled(true);
 			lblPersIni.setText("Personas al comienzo de la simulación: "
 					+ pos.getPosiciones().size());
 			contPers++;
@@ -666,17 +721,19 @@ public class Simulador{
 			cancelarButton.setEnabled(false);
 			seleccionarButton1.setEnabled(true);
 			acelerarButton.setEnabled(false);
+			genPersButton.setEnabled(true);
+			genEdificioButton.setEnabled(true);
 			comboBox1.setEnabled(true);
 			state = false;
 			slider.setEnabled(true);
 			slider.setEnabled(true);
 			iniciarButton.setEnabled(false);
 			exportarButton.setEnabled(false);
-			comboBox1.removeAll();
+			comboBox1.removeAllItems();
 			comboBox1.addItem("Algoritmo 1");
 			comboBox1.addItem("Algoritmo 2");
 			comboBox1.addItem("Algoritmo 3");
-			txtFieldFicheroEdificio.setText("");
+			//txtFieldFicheroEdificio.setText("");
 			txtFieldFicheroPersonas.setText("");
 			//panel = new Blackboard();
 			motor = null;
@@ -686,6 +743,7 @@ public class Simulador{
 			state1 = false;
 			motorState = false;
 			stateCalc=false;
+			stateParada = true;
 			finSim = false;
 			numStart=0;
 			velocidad=1;
@@ -699,7 +757,7 @@ public class Simulador{
 			lblTimeCalc.setText("00 : 00 : 00");
 			lblCalculando.setText("");
 			//blackboard.setVisible(true);
-			blackboard.removeAll();
+			((Blackboard)blackboard).borrarPuntos();
 			blackboard.revalidate();
 			blackboard.repaint();
 			//((JFrame)frame).getContentPane().remove(blackboard);
@@ -726,7 +784,7 @@ public class Simulador{
 		try{
 			if(jF1.showSaveDialog(null)== JFileChooser.APPROVE_OPTION){
 				ruta = jF1.getSelectedFile().getAbsolutePath();
-				//Aqui ya tiens la ruta,,,ahora puedes crear un fichero n esa ruta y escribir lo k kieras...
+				//Aqui ya tiens la ruta,,,ahora puedes crear un fichero n esa ruta y escribir lo que kieras...
 			}
 		}catch (Exception ex){
 			ex.printStackTrace();
@@ -752,15 +810,7 @@ public class Simulador{
 		}
 		return ruta;
 	}
-	public void setData(Simulador data) {
-	}
 
-	public void getData(Simulador data) {
-	}
-
-	public boolean isModified(Simulador data) {
-		return false;
-	}
 
 	private void createUIComponents() {
 		// TODO: place custom component creation code here

@@ -14,46 +14,6 @@ public class Blackboard  extends JPanel{
 
 	ArrayList bd = new ArrayList();
 
-	public ArrayList<Coordenadas> getPrevs() {
-		return prevs;
-	}
-
-	public ArrayList<Coordenadas> getMovs() {
-		return movs;
-	}
-
-	public ArrayList<Coordenadas> getDuplicadosInterc() {
-		return duplicadosInterc;
-	}
-
-	public ArrayList<Coordenadas> getPrevDuplicadosInterc() {
-		return prevDuplicadosInterc;
-	}
-
-	public ArrayList<Coordenadas> getDuplicadosSp() {
-		return duplicadosSp;
-	}
-
-	public ArrayList<Coordenadas> getPrevDuplicadosSp() {
-		return prevDuplicadosSp;
-	}
-
-	public ArrayList<Coordenadas> getDupMenosPrioritarios() {
-		return dupMenosPrioritarios;
-	}
-
-	public ArrayList<Coordenadas> getPrevDupMenosPrioritarios() {
-		return prevDupMenosPrioritarios;
-	}
-
-	public ArrayList<Coordenadas> getRep() {
-		return rep;
-	}
-
-	public ArrayList<Coordenadas> getPrevDups() {
-		return prevDups;
-	}
-
 	ArrayList<Coordenadas> prevs = new ArrayList<>();
 	ArrayList<Coordenadas> movs = new ArrayList<>();
 	ArrayList<Coordenadas> duplicadosInterc= new ArrayList<>();
@@ -226,7 +186,7 @@ public class Blackboard  extends JPanel{
 		int cont = 0;
 		for(Object node:bd) {
 			if(node instanceof Point2DAnimable)  {
-				if(!((Point2DAnimable) node).getMovimientos().isEmpty() ){
+				if(!((Point2DAnimable) node).getMovimientos().isEmpty()){
 					if(cont > 0){ return false; }
 					cont++;
 				}

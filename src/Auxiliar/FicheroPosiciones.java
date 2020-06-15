@@ -29,7 +29,7 @@ public class FicheroPosiciones {
 		FileReader fr = null;
 		BufferedReader br = null;
 		String[] aux = null;
-		
+
 		try {
 			// Apertura del fichero y creacion de BufferedReader para poder
 			// hacer una lectura comoda (disponer del metodo readLine()).

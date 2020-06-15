@@ -10,6 +10,7 @@ import graph.Edificio;
 import graph.Informacion;
 import material.Vertex;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Menu {
@@ -466,8 +467,13 @@ public class Menu {
 			if(lec.getBaldosas().get(i).getPos()==2)
 				fin.add(lec.getBaldosas().get(i).getCoord());
 
-		if(args[1].contains("."))
-			pos = new FicheroPosiciones(args[1],lec.getDimensiones());
+		if(args[1].contains(".")) {
+			try {
+				pos = new FicheroPosiciones(args[1],lec.getDimensiones());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 		else
 			pos = new FicheroPosiciones(args[1],lec);
 			
@@ -500,8 +506,13 @@ public class Menu {
 			if(lec.getBaldosas().get(i).getPos()==2)
 				fin.add(lec.getBaldosas().get(i).getCoord());
 
-		if(args[1].contains("."))
-			pos = new FicheroPosiciones(args[1],lec.getDimensiones());
+		if(args[1].contains(".")) {
+			try {
+				pos = new FicheroPosiciones(args[1],lec.getDimensiones());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 		else
 			pos = new FicheroPosiciones(args[1],lec);
 
@@ -624,7 +635,7 @@ public class Menu {
 		generarEstadoParcialAux(people, asignacion,lec);
 		e.getPlanta().asignarEstado(); 
 		e.getPlanta().vaciarEstadoAux();
-		completarEstadoInt(mayor+1);
+		completarEstado(mayor+1);
 		
 		return e.getPlanta().getEstado();
 		
@@ -891,8 +902,13 @@ public class Menu {
 	}
 
 	public Fuego menuF(String[] s, FicheroEdificio lec, int opcion) {
-		if(s[1].contains("."))
-			pos = new FicheroPosiciones(s[1],lec.getDimensiones());
+		if(s[1].contains(".")) {
+			try {
+				pos = new FicheroPosiciones(s[1],lec.getDimensiones());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 		else
 			pos = new FicheroPosiciones(s[1],lec);
 
