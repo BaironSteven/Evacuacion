@@ -32,7 +32,6 @@ public class Simulador{
 	private JButton pararButton;
 	private JButton reiniciarButton;
 	private JButton genPersButton;
-	private JComboBox comboBox1;
 	private JLabel lblAlgoritmo;
 	private JLabel lblPersIni;
 	private JLabel lblPersRest;
@@ -45,6 +44,8 @@ public class Simulador{
 	private JLabel lblCalculando;
 	private JPanel blackboard;
 	private JPanel panel;
+	String[] options = {"Algoritmo 1","Algoritmo 2","Algoritmo 3"};
+	private JComboBox<String> comboBox1;
 
 
 	protected String ficheroPersonas;
@@ -178,7 +179,8 @@ public class Simulador{
 
 		Thread t1 = new Thread(() -> {
 			int cont = 0;
-			for (;;) {
+
+			while (!finSim){
 
 				if (cont==0) {
 					try {
@@ -186,11 +188,12 @@ public class Simulador{
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					cont++;
 				}
-				cont++;
+
 				if (state1) {
 
-						++seg1;
+						seg1++;
 						if(seg1==60) {
 							seg1=0;
 							++min1;
@@ -205,12 +208,12 @@ public class Simulador{
 
 				}
 
-			try {
+				try {
 
-				Thread.sleep(1000/velocidad);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+					Thread.sleep(1000/velocidad);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
 			}
 		});
@@ -220,7 +223,7 @@ public class Simulador{
 			while(stateParada) {
 				if (cont==0) {
 					try {
-						motorGrafic.sleep(90);
+						motorGrafic.sleep(250);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -388,14 +391,14 @@ public class Simulador{
 			motorState = true;
 			state = false;
 			state1 = true;
-			motorGrafic.start();
-			etiquetaPers.start();
-			t1.start();
-			tParada.start();
 			acelerarButton.setEnabled(true);
 			pararButton.setEnabled(true);
 			cancelarButton.setEnabled(false);
 			lblCalculando.setText("");
+			etiquetaPers.start();
+			t1.start();
+			tParada.start();
+			motorGrafic.start();
 		});
 		alg.start();
 
@@ -451,11 +454,11 @@ public class Simulador{
 
 	public Simulador() {
 
-		//comboBox1 = new JComboBox();
+		/*if (comboBox1 != null) {
 		comboBox1.addItem("Algoritmo 1");
 		comboBox1.addItem("Algoritmo 2");
-		comboBox1.addItem("Algoritmo 3");
-		genPersButton.setEnabled(false);
+		comboBox1.addItem("Algoritmo 3");}*/
+		/*genPersButton.setEnabled(false);
 		genEdificioButton.setEnabled(false);
 		cancelarButton.setEnabled(false);
 		acelerarButton.setEnabled(false);
@@ -464,13 +467,13 @@ public class Simulador{
 		reiniciarButton.setEnabled(false);
 		slider.setEnabled(false);
 		seleccionarButton1.setEnabled(false);
-		exportarButton.setEnabled(false);
+		exportarButton.setEnabled(false);*/
 		//Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
 		//double escala = ss.width / 1920d;
 
 		//slider = new JSlider();
-		slider.setValue(5);
-		porcentajeOcupacion = Integer.toString(slider.getValue());
+		//slider.setValue(5);
+		porcentajeOcupacion = "5";
 
 		//int blackboardHeight = blackboard.getX();
 		//int blackboardWidth = blackboard.getY();
@@ -519,7 +522,7 @@ public class Simulador{
 			lblPersEvac.setText("Personas evacuadas: ");
 			lblCalculando.setText("");
 			seleccionarButton.setEnabled(true);
-			seleccionarButton1.setEnabled(true);
+			seleccionarButton1.setEnabled(false);
 			comboBox1.setEnabled(true);
 			acelerarButton.setEnabled(false);
 			slider.setEnabled(false);
@@ -765,7 +768,7 @@ public class Simulador{
 		});
 
 		acelerarButton.addActionListener(e -> {
-			if(velocidad==8) {
+			if(velocidad==4) {
 				velocidad = 1;
 				acelerarButton.setText("Acelerar");
 			} else {
@@ -773,6 +776,7 @@ public class Simulador{
 				acelerarButton.setText("Acelerar x" + velocidad);
 			}
 		});
+
 
 
 	}
@@ -815,5 +819,6 @@ public class Simulador{
 		// TODO: place custom component creation code here
 
 		blackboard = new Blackboard();
+		comboBox1 = new JComboBox<String>(options);
 	}
 }

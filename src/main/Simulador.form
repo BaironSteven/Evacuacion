@@ -41,6 +41,7 @@
           <grid row="6" column="13" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Seleccionar"/>
         </properties>
       </component>
@@ -90,6 +91,7 @@
           <grid row="18" column="8" row-span="1" col-span="6" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Parar"/>
         </properties>
       </component>
@@ -98,6 +100,7 @@
           <grid row="17" column="8" row-span="1" col-span="6" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Iniciar"/>
         </properties>
       </component>
@@ -106,6 +109,7 @@
           <grid row="15" column="8" row-span="2" col-span="4" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Gen. Edificio"/>
         </properties>
       </component>
@@ -114,6 +118,7 @@
           <grid row="15" column="12" row-span="2" col-span="2" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Gen. Pers."/>
         </properties>
       </component>
@@ -155,13 +160,17 @@
         <constraints>
           <grid row="14" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="10" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <maximum value="50"/>
+          <value value="5"/>
+        </properties>
       </component>
       <component id="fa0a8" class="javax.swing.JButton" binding="exportarButton" default-binding="true">
         <constraints>
           <grid row="14" column="12" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Exportar"/>
         </properties>
       </component>
@@ -178,6 +187,7 @@
           <grid row="19" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Acelerar"/>
         </properties>
       </component>
@@ -186,6 +196,7 @@
           <grid row="19" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Cancelar"/>
         </properties>
       </component>
@@ -194,6 +205,7 @@
           <grid row="19" column="8" row-span="1" col-span="6" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Reiniciar"/>
         </properties>
       </component>
@@ -302,7 +314,7 @@
           <text value="00 : 00 : 00"/>
         </properties>
       </component>
-      <component id="671e4" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+      <component id="671e4" class="javax.swing.JComboBox" binding="comboBox1" custom-create="true">
         <constraints>
           <grid row="9" column="11" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>

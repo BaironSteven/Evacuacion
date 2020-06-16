@@ -68,12 +68,12 @@ public class Blackboard  extends JPanel{
 
 
 	public boolean isEmpty() {
-		int cont = 0;
+		//int cont = 0;
 		for(Object node:bd) {
 			if(node instanceof Point2DAnimable)  {
 				if(!((Point2DAnimable) node).getMovimientos().isEmpty()){
-					if(cont > 0){ return false; }
-					cont++;
+					/*if(cont > 0){*/ return false; //}
+					//cont++;
 				}
 			}
 		}
@@ -89,8 +89,12 @@ public class Blackboard  extends JPanel{
 		int numPers = 0;
 		for(Object node:bd) {
 			if (node instanceof Point2DAnimable) {
-				if(!((Point2DAnimable) node).getMovimientos().isEmpty() && !((Point2DAnimable) node).getMovimientos().get(0).equals(new Coordenadas(-1,-1))){
-					numPers++;
+				try {
+					if (!((Point2DAnimable) node).getMovimientos().isEmpty() && !((Point2DAnimable) node).getMovimientos().get(0).equals(new Coordenadas(-1, -1))) {
+						numPers++;
+					}
+				} catch (IndexOutOfBoundsException e) {
+					numPers = 0;
 				}
 			}
 		}
